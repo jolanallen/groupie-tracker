@@ -1,26 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu du Pendu - Accueil</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css">
-    <link rel="scriptJs" href="/js/script.js"   type="">
-</head>
-<body>
-    <div>
-        <h1> bonjour bienvenue dan groupie tracker</h1>
-    </div>
-    <script>
-        const url = 'https://api.adviceslip.com/advice';
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            let adviceElement = document.createElement('p');
-            adviceElement.innerHTML = `Conseil du jour : "${data.slip.advice}"`;
-            document.body.appendChild(adviceElement);
-        })
-    </script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Jeu du Pendu - Accueil</title>
+        <link rel="stylesheet" href="/css/style.css" type="text/css">
+        <script src="/js/script.js" type="text/javascript" defer></script> 
+    </head>
+    <body>
+        <div>
+            <h1>Bonjour, bienvenue dans Groupie Tracker</h1>
+            <form method="post">
+                <input type="button" value="Cliquez ici" onclick="DireBonjour()" />
+            </form>
+            <div id="advice-container"></div>
+        </div>
+    </body>
 </html>
