@@ -15,6 +15,10 @@ func main() {
 	js := http.FileServer(http.Dir("./web/js"))
 	http.Handle("/js/", http.StripPrefix("/js/", js))
 
+
+
+
+	
 	tmpl, err := template.ParseFiles("web/templates/index.html")
 	if err != nil {
 		fmt.Println("Erreur de chargement du template:", err)
