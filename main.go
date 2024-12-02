@@ -7,8 +7,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Serveur démarré sur http://localhost:3030")
-
+	fmt.Println("Serveur démarré sur http://localhost:3031")
 
 	css := http.FileServer(http.Dir("./web/css"))
 	http.Handle("/css/", http.StripPrefix("/css/", css))
@@ -16,14 +15,19 @@ func main() {
 	js := http.FileServer(http.Dir("./web/js"))
 	http.Handle("/js/", http.StripPrefix("/js/", js))
 
-	tmpl := template.Must(template.ParseFiles("web/templates/index.html"))
-
+	tmpl, err := template.ParseFiles("web/templates/index.html")
+	if err != nil {
+		fmt.Println("Erreur de chargement du template:", err)
+		return
+	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-
 		tmpl.Execute(w, nil)
 	})
 
-	
-	http.ListenAndServe(":3030", nil)
+	err = http.ListenAndServe(":3031", nil)
+	if err != nil {
+		fmt.Println("Erreur lors du démarrage du serveur:", err)
+		return
+	}
 }
