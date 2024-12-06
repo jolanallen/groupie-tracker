@@ -1,5 +1,118 @@
-h1 {
-    color: brown;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fond et police générale */
+body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    background-color: #000000;
+    color: #333;
+    padding-left: 50px;
+    padding-right: 50px;
+    text-shadow: #3f3f3f;
+}
+
+.navbar-container {
+    position: relative;
+    height: 550px;
+}
+
+.navbar-fixed-top {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 500px; /* Prendre toute la hauteur */
+    background-image: url("/utiles/nav.gif");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding-top: 50px; /* Pour un peu d'espace au-dessus */
   
-    
+    display: flex;
+    flex-direction: column;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+.navbar {
+    display: block;
+    position: relative;
+    text-align: center;
+    height: 100px;
+    top: 450px;
+}
+.head h1 {
+    margin-top: 20px;
+    color: #7711bd;
+    text-align: center;
+    height: 100px;
+}
+.navbar-bouton {
+    margin: 100px;
+    background-color: #7711bd;
+    transition: background-image 0.5s;
+    cursor: pointer;
+    border-radius: 10px;
+    padding-inline: 50px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.navbar-bouton:hover {
+    opacity: 0.5  ;
+}
+
+.section-home {
+    padding: 100px 0;
+    text-align: center;
+}
+
+.section-home h2 {
+    color: #3f3f3f;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.section-home p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+.section-about {
+    padding: 100px 0;
+    text-align: center;
+}
+
+.section-about h2 {
+    color: #3f3f3f;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.section-about p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Section Projets */
+.section-artistes {
+    background-color: #161616;
+    padding: 150px 0;
+    text-align: center;
+    height: 1000px;
+}
+
+.section-artistes h2 {
+    color: #3f3f3f;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+   
+}
+.section-artistes p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
 }

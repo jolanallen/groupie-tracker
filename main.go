@@ -15,6 +15,9 @@ func main() {
 	js := http.FileServer(http.Dir("./web/js"))
 	http.Handle("/js/", http.StripPrefix("/js/", js))
 
+	images := http.FileServer(http.Dir("./web/utiles"))
+	http.Handle("/utiles/", http.StripPrefix("/utiles/", images))
+
 
 
 
