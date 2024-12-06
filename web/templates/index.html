@@ -3,19 +3,53 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Jeu du Pendu - Accueil</title>
+        <title>Groupie tracker</title>
         <link rel="stylesheet" href="/css/style.css" type="text/css">
-        <script src="/js/script.js" type="text/javascript" defer></script> 
+        <script src="/js/script.js" type="text/javascript" ></script>
     </head>
     <body>
         <div>
-            <h1>Bonjour, bienvenue dans Groupie Tracker</h1>
-            
+            <div class="head">
+                <h1>Bonjour, bienvenue dans Groupie Tracker</h1>
+            </div>
+            <div class="navbar-container">
+                <div class="navbar-fixed-top">
+                    <nav class="navbar">
+                        <a href="#home" class="navbar-bouton">Home</a>
+                        <a href="#Artistes" class="navbar-bouton">Artistes</a>
+                        <a href="#about" class="navbar-bouton">À propos</a>
+                        <a href="#contact" class="navbar-bouton">Contact</a>
+                    </nav>
+                </div>
+            </div>
             <form method="post">
                 <input type="button" value="Cliquez ici" onclick="Fetch()" />
             </form>
-            <p id="affichage"></p>
-            <div id="advice-container"></div>
+            <section id="home" class="section-home">
+                <div class="container">
+                    <h2>Acceuil</h2>
+                    <p>lalalallal vous êtes dans home</p>
+                </div>
+            </section>
+            <section id="Artistes" class="section-artistes">
+                <div class="container">
+                    <h2>Artistes</h2>
+                    <div id="advice-container"></div>
+                    <p>lalalallal vous êtes dans la section artiste</p>
+                </div>
+            </section>
+            <section id="about" class="section-about">
+                <div class="container">
+                    <h2>A Propos</h2>
+                    <p>lalalallal vous êtes dans a propos </p>
+                </div>
+            </section>
+            <section id="contact" class="section-contact">
+                <div class="container">
+                    <h2>Contact</h2>
+                    <p>lalalallal vous êtes dans contatc</p>
+                </div>
+            </section>
         </div>
     </body>
 </html>
