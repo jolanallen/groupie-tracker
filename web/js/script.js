@@ -32,13 +32,28 @@ function Fetch() {
             if (Array.isArray(artists)) {
                 console.log("Artistes récupérés avec succès !");
                 artists.forEach(artist => {
-                    console.log(`Nom du groupe : ${artist.name}`);
-                    console.log(`Membres : ${artist.members.join(', ')}`);
-                    console.log(`Date de création : ${artist.creationDate}`);
-                    console.log(`Premier album : ${artist.firstAlbum}`);
-                    console.log(`Image : ${artist.image}`);
-                    console.log(`Lien des concerts : ${artist.concertDates}`);
-                    console.log('-------------------');
+                    if (artist.id === 1) {
+                        console.log("Artiste trouvé :", artist);
+
+                        // Extraire les informations de l'artiste
+                        const ID = artist.id;
+                        const NameGroupe = artist.name;
+                        const Members = artist.members.join(', ');
+                        const CDate = artist.creationDate;
+                        const FAlbum = artist.firstAlbum;
+                        const Image = artist.image;
+                        const DConcert = artist.concertDates;
+
+                        // Ajouter les informations à la page HTML
+                        document.getElementById("affichage").innerHTML = `
+                            <h2>Nom du groupe : ${NameGroupe}</h2>
+                            <p>Membres : ${Members}</p>
+                            <p>Date de création : ${CDate}</p>
+                            <p>Premier album : ${FAlbum}</p>
+                            <img src="${Image}" alt="${NameGroupe}" style="width: 200px; height: auto;">
+                            <p>Dates de concert : ${DConcert}</p>
+                        `;
+                    }
                 });
             } else {
                 console.error("La réponse des artistes n'est pas un tableau.");
