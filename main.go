@@ -6,5 +6,5 @@ import (
 
 func main() {
 	var gt groupietracker.Artists
-	gt.Run()
+	gt.Web()
 }

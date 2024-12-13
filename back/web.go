@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"net/http"
 )
-func web() {
+func (a *Artists) Web() {
 	fmt.Println("Serveur démarré sur http://localhost:3031")
 
 	css := http.FileServer(http.Dir("./web/css"))
