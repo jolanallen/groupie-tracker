@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func (i *Identifiant) test() {
+func (i *Identifiant) FisrtChoice() {
 
 	response, err := http.Get("https://groupietrackers.herokuapp.com/api")
 	if err != nil {
@@ -32,3 +32,5 @@ func (i *Identifiant) test() {
 	}
 
 }
+
+func 
