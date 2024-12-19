@@ -33,4 +33,3 @@ func (i *Identifiant) FisrtChoice() {
 
 }
 
-func 
