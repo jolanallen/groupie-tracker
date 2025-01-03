@@ -13,7 +13,7 @@ func (a *Artists) init() {
 }
 
 
-func LoadData() []ArtistsData {
+func LoadData(g *) []ArtistsData {
 	Artists := make([]ArtistsData, 0)
 
 API := [4]string{

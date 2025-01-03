@@ -7,9 +7,7 @@ type Artists struct {
 	Members []string        `json:"members"`
 	CreationDate int        `json:"creationDate"`
     FirstAlbum string       `json:"firstAlbum"`
-    Locations string        
-    ConcertDates string     `json:"concertDates"`
-    Relations string        `json:"relations"`
+    
 }
 
 type Identifiant struct {
@@ -17,6 +15,7 @@ type Identifiant struct {
 }
 
 type RelationData struct {
-	Locations []string      `json:"locations"`
-	Dates     []string      `json:"dates"`
+    DatesLocations map[string][]string    `json:"datesLocations"`
+	
 }
+
