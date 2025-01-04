@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,8 +50,8 @@
     <section class="relations">
       <h2>Concert Locations & Dates:</h2>
       
-      {{if .DatesLocations}} <!-- Vérifie si des relations existent -->
-          {{range $location, $dates := .DatesLocations}} <!-- Pour chaque location -->
+      {{if .DatesLocations}} 
+          {{range $location, $dates := .DatesLocations}} 
               <div class="relation-card">
                   <h3>{{ $location }}</h3>
                   <ul>
@@ -62,7 +62,7 @@
               </div>
           {{end}}
       {{else}}
-          <p>No relations available</p> <!-- Si aucune relation n'est disponible -->
+          <p>No dates and locations  available</p> 
       {{end}}
 
   </section>
