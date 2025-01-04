@@ -34,9 +34,20 @@
 </section>
 
 <section class="content">
-    <title>Concert Locations</title>
-    <h1>Concert Locations on the Map</h1>
-    <div id="map" style="height: 500px; width: 100%;"></div>
+    <div class="artist">
+      <h1>{{.Name}}</h1>
+    <img src="{{.Image}}" alt="{{.Name}} Image" />
+    <p><strong>Creation Date:</strong> {{.CreationDate}}</p>
+    <p><strong>Members:</strong></p>
+    <ul>
+        {{range .Members}}
+            <li>{{.}}</li>
+        {{end}}
+    </ul>
+
+    <p><strong>Relations:</strong></p>
+    <pre>{{.Relations}}</pre>
+    </div>
 </section>
 
 <section class="footer">

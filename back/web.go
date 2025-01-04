@@ -24,11 +24,24 @@ func (g *Groupie) Apropos(w http.ResponseWriter, r *http.Request) {   // fonctio
 
 
 func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
-	// Utilisation de template.Must pour charger et exécuter le template
+	r.ParseForm()
 	tmpl := template.Must(template.ParseFiles(html))
+	Id := r.FormValue("id")
+
+	if Id!= "" {
+        g.RequestById(Id)
+    }
+
+	data := Artists{
+		Id:          a.Id,
+        Name:        a.Name,
+        Image:       a.Image,
+        Members:     a.Members,
+        CreationDate: a.CreationDate,
+	}
 	
 	// Exécution du template sans données supplémentaires (nil)
-	tmpl.Execute(w, nil)
+	tmpl.Execute(w, data)
 	
 }
 

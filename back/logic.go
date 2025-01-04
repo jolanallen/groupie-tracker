@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-func (g *Groupie) RequestById() {
-	id := 2
+func (g *Groupie) RequestById(Id string) {
+	
 
-	url := fmt.Sprintf("http://groupietrackers.herokuapp.com/api/artists/%d", id)
+	url := fmt.Sprintf("http://groupietrackers.herokuapp.com/api/artists/%s", Id)
 
 	Request, err := http.Get(url)
 	if err != nil {
@@ -47,6 +47,11 @@ func (g *Groupie) RequestById() {
 	fmt.Println("Creation Date: ", responseData.CreationDate)
 	fmt.Println("First Album: ", responseData.FirstAlbum)
 	fmt.Println("Relations: ", g.Relations)
+	
+    a.Image = responseData.Image
+    a.Members = responseData.Members
+    a.CreationDate = responseData.CreationDate
+
 
 	g.RequestRelation()
 }
