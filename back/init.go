@@ -4,6 +4,7 @@ package groupietracker
 
 var a Artists
 
+
 func (g *Groupie) Init() {
     a.Image =""
 	a.Name =""

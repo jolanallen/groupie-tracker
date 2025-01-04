@@ -37,7 +37,7 @@ func (g *Groupie) RequestById(Id string) {
 		return
 	}
 
-	g.Relations = responseData.Relations
+	
 
 	// Affichage des informations de l'artiste
 	fmt.Println("ID: ", responseData.Id)
@@ -46,23 +46,28 @@ func (g *Groupie) RequestById(Id string) {
 	fmt.Println("Members: ", responseData.Members)
 	fmt.Println("Creation Date: ", responseData.CreationDate)
 	fmt.Println("First Album: ", responseData.FirstAlbum)
-	fmt.Println("Relations: ", g.Relations)
-	
+	fmt.Println("Relations: ", responseData.Relations)
+
+	a.Name = responseData.Name
     a.Image = responseData.Image
     a.Members = responseData.Members
     a.CreationDate = responseData.CreationDate
+	a.Relations = responseData.Relations
+	a.FirstAlbum = responseData.FirstAlbum
+	a.DatesLocations = responseData.DatesLocations
+	
 
 
 	g.RequestRelation()
 }
 
 func (g *Groupie) RequestRelation() {
-	if g.Relations == "" {
+	if a.Relations == "" {
 		fmt.Println("Relations is not set")
 		return
 	}
 
-	Requestbis, err := http.Get(g.Relations)
+	Requestbis, err := http.Get(a.Relations)
 	if err != nil {
 		fmt.Println("Error fetching relations: ", err)
 		return
@@ -86,11 +91,10 @@ func (g *Groupie) RequestRelation() {
 		fmt.Println("Error Unmarshal: ", err)
 		return
 	}
-	jsonData, err := json.MarshalIndent(responseDataBis.DatesLocations, "", "")
-	if err != nil {
-		fmt.Println("error", err)
-	}
-	fmt.Println("ID: ", responseDataBis.ID)
-	fmt.Println("name:", )
-	fmt.Println("Relations JSON: ", string(jsonData))
+
+	// Afficher les relations pour vérification
+	fmt.Println("Relations JSON: ", responseDataBis.DatesLocations)
+
+	// Stocker les relations dans la structure de données
+	a.DatesLocations = responseDataBis.DatesLocations
 }

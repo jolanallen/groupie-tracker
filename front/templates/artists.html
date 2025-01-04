@@ -1,59 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Groupie tracker</title>
-        <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-        <script src="../js/script.js" charset="utf-8" defer ></script>
-        <script src="../js/location.js" rel="script" ></script>
-    </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupie tracker</title>
+    <script src="../js/script.js" charset="utf-8" defer></script>
+    <script src="../js/location.js" rel="script"></script>
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
 <header>
     <div id="mySidenav" class="sidenav">
         <h1>Artists</h1>
         <a id="closeBtn" href="#" class="close">x</a>
         <ul>
             <h2>Menu</h2>
-          <li><a href="../templates/index.html">Home</a></li>
-          <li><a href="../templates/artists.html">Artists</a></li>
-          <li><a href="../templates/Apropos.html">About</a></li>
+            <li><a href="../templates/index.html">Home</a></li>
+            <li><a href="../templates/artists.html">Artists</a></li>
+            <li><a href="../templates/Apropos.html">About</a></li>
         </ul>
-      </div>
-      <a id="openBtn">
+    </div>
+    <a id="openBtn">
         <span class="burger-icon">
-          <span></span>
-          <span></span>
-          <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </span>
-      </a>      
+    </a>
 </header>
+
 <section class="header">
     <h1>Artists</h1>
     <p>This page displays a list of artists and their concert locations.</p>
 </section>
 
 <section class="content">
-    <div class="artist">
-      <h1>{{.Name}}</h1>
-    <img src="{{.Image}}" alt="{{.Name}} Image" />
+    <h1>{{.Name}}</h1>
+    <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
     <p><strong>Creation Date:</strong> {{.CreationDate}}</p>
-    <p><strong>Members:</strong></p>
-    <ul>
-        {{range .Members}}
-            <li>{{.}}</li>
-        {{end}}
-    </ul>
+    
+    <section class="members">
+        <h2>Members:</h2>
+        <ul>
+            {{range .Members}}
+                <li>{{.}}</li>
+            {{end}}
+        </ul>
+    </section>
+    <section class="relations">
+      <h2>Concert Locations & Dates:</h2>
+      
+      {{if .DatesLocations}} <!-- Vérifie si des relations existent -->
+          {{range $location, $dates := .DatesLocations}} <!-- Pour chaque location -->
+              <div class="relation-card">
+                  <h3>{{ $location }}</h3>
+                  <ul>
+                      {{range $dates}} <!-- Liste les dates pour chaque lieu -->
+                          <li>{{.}}</li>
+                      {{end}}
+                  </ul>
+              </div>
+          {{end}}
+      {{else}}
+          <p>No relations available</p> <!-- Si aucune relation n'est disponible -->
+      {{end}}
 
-    <p><strong>Relations:</strong></p>
-    <pre>{{.Relations}}</pre>
-    </div>
-</section>
+  </section>
+  
 
 <section class="footer">
     <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>
-  </section>
-  </body>
-  <link rel="stylesheet" href="../css/index.css">
-  
+</section>
+</body>
 </html>

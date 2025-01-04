@@ -33,11 +33,13 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
     }
 
 	data := Artists{
-		Id:          a.Id,
         Name:        a.Name,
         Image:       a.Image,
         Members:     a.Members,
         CreationDate: a.CreationDate,
+		FirstAlbum:  a.FirstAlbum,
+		Relations:   a.Relations,
+        DatesLocations:   a.DatesLocations,
 	}
 	
 	// Exécution du template sans données supplémentaires (nil)
