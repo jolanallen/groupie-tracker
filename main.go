@@ -5,6 +5,9 @@ import (
 )
 
 func main() {
-	var gt groupietracker.Artists
-	gt.Web()
+	var g groupietracker.Groupie
+	g.Init()
+	g.Web()
+
+
 }
