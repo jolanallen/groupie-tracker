@@ -25,12 +25,17 @@
       </a>      
 </header>
 <section class="content">
-  <div class="container">
-    <form action="/Artists" method="get">
-      <button class="bouton" id="details" type="submit" name="id" value="1" >artist 1</button>
-      <button class="bouton" id="details" type="submit" name="id" value="2" >artist 2</button>
-    </form>
-  </div>
+  {{if .}} 
+      {{range .}} <!-- Parcourt tous les artistes -->
+          <div class="artist-card">
+              <h3>{{.Name}}</h3>
+              <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
+              <form action="/artists" method="get">
+                  <button class="bouton" type="submit" name="id" value="{{.Id}}">View Details</button>
+              </form>
+          </div>
+      {{end}}
+  {{end}}
 </section>
 <section class="footer">
   <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>

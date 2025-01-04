@@ -1,12 +1,9 @@
 package groupietracker
 
-
-
-
 import (
+	"fmt"
 	"html/template"
 	"net/http"
-	
 )
 
 func (g *Groupie) Home(w http.ResponseWriter, r *http.Request) {   // fonction pour afficher les differents templates html
@@ -24,30 +21,47 @@ func (g *Groupie) Apropos(w http.ResponseWriter, r *http.Request) {   // fonctio
 
 
 func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
-	r.ParseForm()
-	tmpl := template.Must(template.ParseFiles(html))
-	Id := r.FormValue("id")
+    r.ParseForm()
 
-	if Id!= "" {
-        g.RequestById(Id)
+    tmpl := template.Must(template.ParseFiles(html))
+
+ 
+    Id := r.FormValue("id")
+    urlPath := r.URL.Path
+    var data interface{}
+
+   
+    if Id != "" {
+        artist, err := g.GetArtistById(Id)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        
+        fmt.Println("ID: ", artist.Id)
+        fmt.Println("Name: ", artist.Name)
+        fmt.Println("Image: ", artist.Image)
+        fmt.Println("Members: ", artist.Members)
+        fmt.Println("Creation Date: ", artist.CreationDate)
+        fmt.Println("First Album: ", artist.FirstAlbum)
+        fmt.Println("Relations: ", artist.Relations)
+
+       
+        data = artist
+    } else if urlPath == "/" {
+        // Si aucun ID n'est spécifié, on récupère tous les artistes
+        artists, err := g.GetAllArtists()
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        data = artists
     }
 
-	data := Artists{
-        Name:        a.Name,
-        Image:       a.Image,
-        Members:     a.Members,
-        CreationDate: a.CreationDate,
-		FirstAlbum:  a.FirstAlbum,
-		Relations:   a.Relations,
-        DatesLocations:   a.DatesLocations,
-	}
-	
-	// Exécution du template sans données supplémentaires (nil)
-	tmpl.Execute(w, data)
-	
+ 
+    err := tmpl.Execute(w, data)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
-
-
-
-
-
