@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/http"
 )
+
 func (g *Groupie) GetArtistById(id string) (Artists, error) {
-	
+
 	var artist Artists
-	
+
 	url := fmt.Sprintf("https://groupietrackers.herokuapp.com/api/artists/%s", id)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -16,12 +17,10 @@ func (g *Groupie) GetArtistById(id string) (Artists, error) {
 	}
 	defer resp.Body.Close()
 
-	
 	if resp.StatusCode != http.StatusOK {
 		return artist, fmt.Errorf("échec de la récupération de l'artiste, statut HTTP: %v", resp.Status)
 	}
 
-	
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(&artist)
 	if err != nil {
@@ -35,40 +34,38 @@ func (g *Groupie) GetArtistById(id string) (Artists, error) {
 	fmt.Println("Creation Date: ", artist.CreationDate)
 	fmt.Println("First Album: ", artist.FirstAlbum)
 	fmt.Println("Relations: ", artist.Relations)
-	
 
 	return artist, nil
 }
 
 func (g *Groupie) RequestRelation(relationpath string) (map[string][]string, error) {
-    var relations Relations
+	var relations Relations
 
-    if relationpath == "" {
-        return nil, fmt.Errorf("le chemin des relations est vide")
-    }
+	if relationpath == "" {
+		return nil, fmt.Errorf("le chemin des relations est vide")
+	}
 
-    resp, err := http.Get(relationpath)
-    if err != nil {
-        return nil, fmt.Errorf("erreur lors de la récupération des relations: %v", err)
-    }
-    defer resp.Body.Close()
+	resp, err := http.Get(relationpath)
+	if err != nil {
+		return nil, fmt.Errorf("erreur lors de la récupération des relations: %v", err)
+	}
+	defer resp.Body.Close()
 
-    if resp.StatusCode != http.StatusOK {
-        return nil, fmt.Errorf("échec de la récupération des relations, statut HTTP: %v", resp.Status)
-    }
-   
-    decoder := json.NewDecoder(resp.Body)
-    err = decoder.Decode(&relations)
-    if err != nil {
-        return nil, fmt.Errorf("erreur lors du décodage de la réponse des relations: %v", err)
-    }
-    
-    if len(relations.DatesLocations) == 0 {
-        fmt.Println("Aucune relation trouvée")
-    }
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("échec de la récupération des relations, statut HTTP: %v", resp.Status)
+	}
 
-    fmt.Println("Dates et localisations de concerts:", relations.DatesLocations)
+	decoder := json.NewDecoder(resp.Body)
+	err = decoder.Decode(&relations)
+	if err != nil {
+		return nil, fmt.Errorf("erreur lors du décodage de la réponse des relations: %v", err)
+	}
 
-    
-    return relations.DatesLocations, nil
+	if len(relations.DatesLocations) == 0 {
+		fmt.Println("Aucune relation trouvée")
+	}
+
+	fmt.Println("Dates et localisations de concerts:", relations.DatesLocations)
+
+	return relations.DatesLocations, nil
 }
