@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Groupie Tracker - Détails de l'Artiste</title>
+    <title>Groupie tracker</title>
     <script src="../js/script.js" charset="utf-8" defer></script>
     <script src="../js/location.js" rel="script"></script>
     <link rel="stylesheet" href="../css/index.css">
@@ -30,25 +30,47 @@
     </a>
 </header>
 
-
-<section class="artist-info">
-  {{if .}} 
-  {{range .}} <!-- Parcourt tous les artistes -->
-      <div class="artist-card">
-          <h3>{{.Name}}</h3>
-          <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
-          <form action="/artists" method="get">
-              <button class="bouton" type="submit" name="id" value="{{.Id}}">View Details</button>
-          </form>
-      </div>
-  {{end}}
-{{end}}
- 
+<section class="header">
+    <h1>Artists</h1>
+    <p>This page displays a list of artists and their concert locations.</p>
 </section>
+
+<section class="content">
+    <h1>{{.Name}}</h1>
+    <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
+    <p><strong>Creation Date:</strong> {{.CreationDate}}</p>
+    
+    <section class="members">
+        <h2>Members:</h2>
+        <ul>
+            {{range .Members}}
+                <li>{{.}}</li>
+            {{end}}
+        </ul>
+    </section>
+    <section class="relations">
+      <h2>Concert Locations & Dates:</h2>
+      
+      {{if .DatesLocations}} <!-- Vérifie si des relations existent -->
+          {{range $location, $dates := .DatesLocations}} <!-- Pour chaque location -->
+              <div class="relation-card">
+                  <h3>{{ $location }}</h3>
+                  <ul>
+                      {{range $dates}} <!-- Liste les dates pour chaque lieu -->
+                          <li>{{.}}</li>
+                      {{end}}
+                  </ul>
+              </div>
+          {{end}}
+      {{else}}
+          <p>No relations available</p> <!-- Si aucune relation n'est disponible -->
+      {{end}}
+
+  </section>
+  
 
 <section class="footer">
-    <p id="Copyright Groupie tracker">&copy <script>document.write(new Date().getUTCFullYear());</script> Groupie bbbbbbbbbbbbbbbbbTracker by Ynov Montpellier</p>
+    <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>
 </section>
-
 </body>
 </html>
