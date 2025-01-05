@@ -1,47 +1,46 @@
 package groupietracker
 
-import  ( 
-    "regexp"
-    "net/http"
-    "fmt"
-    "io/ioutil"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
 )
 
+var a Artists
 
-func (a *Artists) LoadData() {
 
+func (g *Groupie) Init() {
+    a.Image =""
+	a.Name =""
+	a.Members =[]string{""}
+	a.CreationDate = 0
 
-    API := [2]string{
-        "https://groupietrackers.herokuapp.com/api/artists",
-        "https://groupietrackers.herokuapp.com/api/relation",
-    }
-
-    var ListButStr = regexp.MustCompile(`{([^{}]*)}`)
-
-    for index, link := range API {
-        response, err := http.Get(link)
-        if err != nil {
-                fmt.Printf("Rest failed %s\n", err)
-        } else {
-                data, _ := ioutil.ReadAll(response.Body)
-                result := ListButStr.FindAllString(string(data), -1)
-                switch index {
-                    case 0:
-                            Artists = Get_ArtistsData(result, Artists) //get Artist Data => name, images, members, creation date ,first album
-                    case 1:
-                            Artists = Get_RelationData(result, Artists) //get relations =>date + location
-            }
-        }
-    }
-    return fmt.Println(Artists)
-}
-
-func (a *Artists) Get_ArtistsData(){
-
+	g.TemplateHome = "front/templates/index.html"
+    g.TemplateArtist = "front/templates/artists.html"
+    g.TemplateApropos = "front/templates/Apropos.html"
+	
+	
 
 }
 
-func (a *Artists) Get_RelationData(){
+func (g *Groupie) GetAllArtists() ([]Artists, error) {
+    // Appel à l'API ou à la base de données pour récupérer tous les artistes
+    url := "http://groupietrackers.herokuapp.com/api/artists"
+    response, err := http.Get(url)
+    if err != nil {
+        return nil, fmt.Errorf("erreur lors de la récupération des artistes : %v", err)
+    }
+    defer response.Body.Close()
 
-    
+    if response.StatusCode != http.StatusOK {
+        return nil, fmt.Errorf("erreur avec le code de statut %d", response.StatusCode)
+    }
+
+    var artistsList []Artists
+    err = json.NewDecoder(response.Body).Decode(&artistsList)
+    if err != nil {
+        return nil, fmt.Errorf("erreur lors du décodage de la réponse : %v", err)
+    }
+
+    return artistsList, nil
 }

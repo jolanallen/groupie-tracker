@@ -1,36 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Groupie tracker</title>
-    </head>
-  <body>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupie Tracker - Détails de l'Artiste</title>
+    <script src="../js/script.js" charset="utf-8" defer></script>
+    <script src="../js/location.js" rel="script"></script>
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
 <header>
     <div id="mySidenav" class="sidenav">
         <h1>Artists</h1>
         <a id="closeBtn" href="#" class="close">x</a>
         <ul>
             <h2>Menu</h2>
-          <li><a href="../templates/index.html">Home</a></li>
-          <li><a href="../templates/artists.html">Artists</a></li>
-          <li><a href="../templates/Apropos.html">About</a></li>
+            <li><a href="../templates/index.html">Home</a></li>
+            <li><a href="../templates/artists.html">Artists</a></li>
+            <li><a href="../templates/Apropos.html">About</a></li>
         </ul>
-      </div>
-      <a id="openBtn">
+    </div>
+    <a id="openBtn">
         <span class="burger-icon">
-          <span></span>
-          <span></span>
-          <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </span>
-      </a>      
+    </a>
 </header>
-<section class="header"></section>
+
+
+<section class="artist-info">
+  {{if .}} 
+  {{range .}} <!-- Parcourt tous les artistes -->
+      <div class="artist-card">
+          <h3>{{.Name}}</h3>
+          <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
+          <form action="/artists" method="get">
+              <button class="bouton" type="submit" name="id" value="{{.Id}}">View Details</button>
+          </form>
+      </div>
+  {{end}}
+{{end}}
+ 
+</section>
 
 <section class="footer">
-    <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>
-  </section>
-  </body>
-  <link rel="stylesheet" href="../css/index.css">
-  <script src="../js/script.js" charset="utf-8"></script>
+    <p id="Copyright Groupie tracker">&copy <script>document.write(new Date().getUTCFullYear());</script> Groupie Tracker by Ynov Montpellier</p>
+</section>
+
+</body>
 </html>
