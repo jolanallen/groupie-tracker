@@ -7,8 +7,6 @@ import (
 func main() {
 	var g groupietracker.Groupie
 	g.Init()
-	g.GetAllArtists()
 	g.Web()
-
 
 }
