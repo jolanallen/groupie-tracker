@@ -6,62 +6,59 @@ import (
 	"net/http"
 )
 
-func (g *Groupie) Home(w http.ResponseWriter, r *http.Request) {   // fonction pour afficher les differents templates html
+func (g *Groupie) Home(w http.ResponseWriter, r *http.Request) { // fonction pour afficher les differents templates html
 	g.Request(w, r, g.TemplateHome)
-	
-}
-func (g *Groupie) Artist(w http.ResponseWriter, r *http.Request) {   // fonction pour afficher les differents templates html
-	g.Request(w, r, g.TemplateArtist)  // template dans les quel on injectera les donner récupérer dans l'API
-	
-}
-func (g *Groupie) Apropos(w http.ResponseWriter, r *http.Request) {   // fonction pour afficher les differents templates html
-    g.Request(w, r, g.TemplateApropos)
-    
-}
 
+}
+func (g *Groupie) Artist(w http.ResponseWriter, r *http.Request) { // fonction pour afficher les differents templates html
+	g.Request(w, r, g.TemplateArtist) // template dans les quel on injectera les donner récupérer dans l'API
+
+}
+func (g *Groupie) Apropos(w http.ResponseWriter, r *http.Request) { // fonction pour afficher les differents templates html
+	g.Request(w, r, g.TemplateApropos)
+
+}
 
 func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
-    r.ParseForm()
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		return
+	}
 
-    tmpl := template.Must(template.ParseFiles(html))
+	// Debug: Afficher l'URL
+	fmt.Printf("URL Path__________________________________________________: %s\n", r.URL.Path)
 
- 
-    Id := r.FormValue("id")
-    urlPath := r.URL.Path
-    var data interface{}
+	// Récupérer les données avant de parser le template
+	var data interface{}
+	var err error
 
-   
-    if Id != "" {
-        artist, err := g.GetArtistById(Id)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusInternalServerError)
-            return
-        }
+	if id := r.FormValue("id"); id != "" {
+		data, err = g.GetArtistById(id)
+		fmt.Printf("Artist data______!!!!!!!!!!!!!!!!!!!!!!____________________: %v\n", data)
+	} else {
+		data, err = g.GetAllArtists()
+		// Debug: Afficher les données récupérées
+		fmt.Printf("Artists data__________________________________________________: %+v\n", data)
 
-        
-        fmt.Println("ID: ", artist.Id)
-        fmt.Println("Name: ", artist.Name)
-        fmt.Println("Image: ", artist.Image)
-        fmt.Println("Members: ", artist.Members)
-        fmt.Println("Creation Date: ", artist.CreationDate)
-        fmt.Println("First Album: ", artist.FirstAlbum)
-        fmt.Println("Relations: ", artist.Relations)
 
-       
-        data = artist
-    } else if urlPath == "/" {
-        // Si aucun ID n'est spécifié, on récupère tous les artistes
-        artists, err := g.GetAllArtists()
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusInternalServerError)
-            return
-        }
-        data = artists
-    }
+// Pourquoi on appel cette ligne une deuxieme fois quoi qu'il arrive.?
 
- 
-    err := tmpl.Execute(w, data)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-    }
+	}
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Parser le template après avoir les données
+	tmpl, err := template.ParseFiles(html)
+	if err != nil {
+		http.Error(w, "Template parsing error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Exécuter le template avec les données
+	if err := tmpl.Execute(w, data); err != nil {
+		fmt.Printf("Template execution error: %v\n", err)
+	}
 }
