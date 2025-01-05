@@ -25,17 +25,17 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 		return
 	}
 
-	// Debug: Afficher l'URL
+	id := r.FormValue("id")
 	fmt.Printf("URL Path__________________________________________________: %s\n", r.URL.Path)
-
+	url := r.URL.Path
 	// Récupérer les données avant de parser le template
 	var data interface{}
 	var err error
 
-	if id := r.FormValue("id"); id != "" {
+	if id != "" {
 		data, err = g.GetArtistById(id)
 		fmt.Printf("Artist data______!!!!!!!!!!!!!!!!!!!!!!____________________: %v\n", data)
-	} else {
+	} else if url == "/" {
 		data, err = g.GetAllArtists()
 		// Debug: Afficher les données récupérées
 		fmt.Printf("Artists data__________________________________________________: %+v\n", data)
