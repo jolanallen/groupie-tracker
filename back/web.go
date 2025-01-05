@@ -34,10 +34,15 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 
 	if id := r.FormValue("id"); id != "" {
 		data, err = g.GetArtistById(id)
+		fmt.Printf("Artist data______!!!!!!!!!!!!!!!!!!!!!!____________________: %v\n", data)
 	} else {
 		data, err = g.GetAllArtists()
 		// Debug: Afficher les données récupérées
 		fmt.Printf("Artists data__________________________________________________: %+v\n", data)
+
+
+// Pourquoi on appel cette ligne une deuxieme fois quoi qu'il arrive.?
+
 	}
 
 	if err != nil {
