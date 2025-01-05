@@ -35,7 +35,7 @@ func (g *Groupie) GetArtistById(id string) (Artists, error) {
 	fmt.Println("Creation Date: ", artist.CreationDate)
 	fmt.Println("First Album: ", artist.FirstAlbum)
 	fmt.Println("Relations: ", artist.Relations)
-	
+	g.RequestRelation(a.Relations)
 
 	return artist, nil
 }
