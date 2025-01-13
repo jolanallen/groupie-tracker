@@ -1,3 +1,11 @@
+#titre {
+  text-align: center; /* Centre le texte horizontalement */
+  background-color: lightblue; /* Fond bleu clair */
+  padding: 20px; /* Ajoute de l'espace interne */
+  border: 2px solid blue; /* Bordure bleue */
+  border-radius: 10px; /* Coins arrondis */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre pour un effet de relief */
+}
 /* Sidenav menu */
 .sidenav {
     height: 100%;
@@ -9,6 +17,7 @@
     background-color: #5e5e5e;
     padding-top: 60px;
     transition: left 0.5s ease;
+
   }
   
   /* Sidenav menu links */
@@ -62,4 +71,25 @@
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+#openBtn {
+    display: inline-block;
+    position: absolute; /* Positionnement absolu par rapport au parent */
+    top: 0; /* Ajustez si nécessaire */
+    left: 0; /* Ajustez si nécessaire */
+    width: 30px; /* Largeur identique à celle de .burger-icon */
+    height: 24px; /* Hauteur identique à celle de .burger-icon */
+    z-index: 10; /* Assurez-vous qu'il est au-dessus d'autres éléments */
+    cursor: pointer; /* Pointeur pour indiquer un clic */
+    background-color: transparent; /* Fond transparent */
+    border: none; /* Supprime les bordures */
+}
+
+.artist-card {
+  display: flex;
+  justify-content: center; /* Centre horizontalement */
+  align-items: center; /* Centre verticalement */
+  flex-direction: column; /* Organise les éléments verticalement */
+  
 }
