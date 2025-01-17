@@ -20,7 +20,7 @@ func (g *Groupie) Web() {
 
 	// routes et fonctions associées
 	http.HandleFunc("/", g.Home)
-	http.HandleFunc("/Artists", g.Artist)
+	http.HandleFunc("/artists", g.Artist)
 
 	//démarrage du server web
 	err := http.ListenAndServe(":3666", nil)

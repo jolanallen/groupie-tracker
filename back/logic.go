@@ -180,6 +180,7 @@ func (g *Groupie) LoadArtistDetails(id int) (*Artists, error) {
 
 	return &artist, nil
 }
+
 /*
 func (g *Groupie) SearchBar(name string) int {
 
