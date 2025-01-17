@@ -6,6 +6,8 @@
         <link rel="stylesheet" href="/front/css/index.css">
     </head>
   <body>
+
+
 <header>
     <div id="mySidenav" class="sidenav">
         <a id="closeBtn" href="#" class="close">x</a>
@@ -26,9 +28,16 @@
 </header>
 
 <div><h1 id="titre">
-  Bienvenue sur le groupie tracker 
+  Bienvenue sur  le groupie tracfdfsdf    
 
 </h1></div>
+
+
+
+<div class="box">
+<div class="boxxxx">
+
+</div>
 
 <section class="content">
   {{if .}} 
@@ -37,12 +46,16 @@
               <h3>{{.Name}}</h3>
               <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
               <form action="/Artists" method="get">
-                  <button class="bouton" type="submit" name="id" value="{{.Id}}">View Details</button>
+                  <button name="id" id="artist-button" value="{{.Id}}">Voir Plus</button>
               </form>
           </div>
       {{end}}
   {{end}}
 </section>
+</div>
+
+
+
 <section class="footer">
   <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>
 </section>

@@ -1,11 +1,18 @@
-#titre {
-  text-align: center; /* Centre le texte horizontalement */
-  background-color: lightblue; /* Fond bleu clair */
-  padding: 20px; /* Ajoute de l'espace interne */
-  border: 2px solid blue; /* Bordure bleue */
-  border-radius: 10px; /* Coins arrondis */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre pour un effet de relief */
+body {
+  background-image: url('/css/images/pexels-pixabay-33545.jpg'); /* Image par défaut */
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
 }
+
+
+
+#titre {
+  text-align: center;
+  color: aqua;
+
+}
+
 /* Sidenav menu */
 .sidenav {
     height: 100%;
@@ -87,9 +94,71 @@
 }
 
 .artist-card {
-  display: flex;
+  position:relative;
+  display: inline-block;
   justify-content: center; /* Centre horizontalement */
-  align-items: center; /* Centre verticalement */
   flex-direction: column; /* Organise les éléments verticalement */
+  align-items: center;
+  border-radius: 2%;
   
+}
+
+.artist-card:hover #artist-button {
+  opacity: 1; /* Rend le bouton visible au survol */
+  pointer-events: auto; /* Active les clics */
+}
+
+
+
+.box {
+  display:flex;
+  flex-direction: column;
+  height: 90%;
+}
+
+.content {
+
+display:grid;
+grid-template-columns: auto auto auto auto auto auto ;  
+gap: 15px;
+
+width: 100%;
+height: 25%;
+
+
+
+
+}
+
+.boxxxx {
+
+color: #111;
+width: 70%;
+height: 75%;
+
+}
+
+.artist-image {
+
+  display: block; /* Évite les espaces blancs sous l'image */
+  width: 100%; /* Ajustez la taille si nécessaire */
+  height: 336px;
+
+
+}
+
+#artist-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centre le bouton */
+  padding: 10px 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0; /* Invisible par défaut */
+  transition: opacity 0.3s ease; /* Animation douce lors de l'apparition */
+  pointer-events: none; /* Empêche de cliquer sur un bouton invisible */
 }
