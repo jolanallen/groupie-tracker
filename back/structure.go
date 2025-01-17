@@ -26,6 +26,13 @@ type Relations struct {
 	DatesLocations map[string][]string      `json:"datesLocations"`
 }
 
+type SortOptions struct {
+	// Champ sur lequel effectuer le tri (name, creation, members, etc.)
+	Field string
+
+	// Direction du tri (asc ou desc)
+	Direction string
+}
 
 type ArtistList struct {
 	Artists []Artists `json:"artists"`

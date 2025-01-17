@@ -3,26 +3,35 @@ package groupietracker
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 )
 
-var a Artists
-
 func (g *Groupie) Init() {
-	a.Image = ""
-	a.Name = ""
-	a.Members = []string{""}
-	a.CreationDate = 0
-
+	// Initialise les chemins des templates
 	g.TemplateHome = "front/templates/index.html"
 	g.TemplateArtist = "front/templates/artists.html"
 	g.TemplateApropos = "front/templates/Apropos.html"
 
+	// Valider les chemins des fichiers de template
+	templates := []string{g.TemplateHome, g.TemplateArtist, g.TemplateApropos}
+	for _, template := range templates {
+		if !fileExists(template) {
+			log.Printf("Template manquant : %s", template)
+		}
+	}
+}
+
+func fileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
 func (g *Groupie) GetAllArtists() ([]Artists, error) {
-	// Appel à l'API ou à la base de données pour récupérer tous les artistes
-	url := "http://groupietrackers.herokuapp.com/api/artists"
+	const apiBaseURL = "http://groupietrackers.herokuapp.com/api/"
+	url := fmt.Sprintf("%sartists", apiBaseURL)
+
 	response, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("erreur lors de la récupération des artistes : %v", err)
@@ -38,7 +47,13 @@ func (g *Groupie) GetAllArtists() ([]Artists, error) {
 	if err != nil {
 		return nil, fmt.Errorf("erreur lors du décodage de la réponse : %v", err)
 	}
-	//fmt.Printf("Type of data: %T\n", artistsList)
-	//fmt.Printf("Content: %+v\n", artistsList)
+
+	// Validation des données récupérées
+	for _, artist := range artistsList {
+		if artist.Id == 0 || artist.Name == "" {
+			return nil, fmt.Errorf("artiste invalide dans la réponse API : %+v", artist)
+		}
+	}
+
 	return artistsList, nil
 }
