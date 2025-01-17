@@ -8,36 +8,28 @@
         <title>Groupie tracker</title>
     </head>
   <body>
-<header>
-    <div id="mySidenav" class="sidenav">
-        <a id="closeBtn" href="#" class="close">x</a>
-        <ul>
-            <h2>Menu</h2>
-          <li><a href="../templates/Home.html">Home</a></li>
-          <li><a href="../templates/Artist.html">Artists</a></li>
-        </ul>
-      </div>
-      <a id="openBtn">
-        <span class="burger-icon">
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
-      </a>      
-</header>
-<label for="choices">Choose an option:</label>
-    <select id="choices" name="choices">
-      <option value="Name">Name</option>
-      <option value="date">Date</option>
-    </select>
 
+<form method="GET" action="/">
+  <select name="sortField">
+      <option value="name">Nom</option>
+      <option value="creation">Date de création</option>
+      <option value="members">Nombre de membres</option>
+  </select>
+  <select name="sortDir">
+      <option value="asc">Ascendant</option>
+      <option value="desc">Descendant</option>
+  </select>
+  <button type="submit">Trier</button>
+</form>
 <form action="/artists" method="get">
   <label for="search">Search:</label>
   <input type="text" id="name" name="name" placeholder="Enter your search" list="suggestions" required>
   <datalist id="suggestions">
-      <option value="Queen">
-      <option value="SOJA">
-  </datalist>
+      {{range .}} <!-- Parcourt tous les artistes -->
+              <option value={{.Name}}>
+      {{end}}
+      
+      </datalist>
   <button type="submit">Search</button>
 </form>
 

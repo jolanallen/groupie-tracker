@@ -29,17 +29,26 @@ func (g *Groupie) RequestHome(w http.ResponseWriter, r *http.Request, html strin
 	}
 
 	// Récupérer la valeur de "id" du formulaire
-	Name := r.FormValue("name")
-	fmt.Println(Name)
+	//options := r.FormValue("name")
 	id := r.FormValue("id")
-	fmt.Printf("URL Path__________________________________________________: %s\n", r.URL.Path)
 	url := r.URL.Path
 	var data interface{}
-	fmt.Println(id)
-	fmt.Println(data)
-	fmt.Println(url)
 	var err error
+	sortField := r.FormValue("sortField") // champ de tri
+	sortDir := r.FormValue("sortDir")     // direction du tri
 
+	// Définir les options de tri par défaut si non spécifiées
+	if sortField == "" {
+		sortField = "name" // tri par nom par défaut
+	}
+	if sortDir == "" {
+		sortDir = "asc" // tri ascendant par défaut
+	}
+
+	options := SortOptions{
+		Field:     sortField,
+		Direction: sortDir,
+	}
 	// Si un "id" est fourni, récupérer les informations de l'artiste correspondant
 	if id != "" {
 		// Convertir l'id en entier
@@ -53,7 +62,6 @@ func (g *Groupie) RequestHome(w http.ResponseWriter, r *http.Request, html strin
 
 		// Récupérer les données de l'artiste avec l'ID converti
 		data, err = g.GetArtist(artistID)
-		fmt.Println(data)
 		if err != nil {
 			// Si l'appel pour récupérer les données échoue, afficher une erreur
 			fmt.Printf("Erreur de récupération des données pour l'artiste: %v\n", err)
@@ -62,15 +70,17 @@ func (g *Groupie) RequestHome(w http.ResponseWriter, r *http.Request, html strin
 		}
 		fmt.Printf("Artist data : %v\n", data)
 	} else if url == "/" {
-		// Si aucun "id" n'est spécifié, récupérer tous les artistes
 		data, err = g.GetAllArtists()
 		if err != nil {
-			// Si l'appel pour récupérer tous les artistes échoue
 			fmt.Printf("Erreur de récupération des données des artistes: %v\n", err)
 			http.Error(w, "Erreur lors de la récupération des données des artistes", http.StatusInternalServerError)
 			return
 		}
-		//fmt.Printf("Artists data__________________________________________________: %+v\n", data)
+
+		// Maintenant on peut utiliser options correctement
+		if artists, ok := data.([]Artists); ok {
+			data = g.SortArtists(artists, options)
+		}
 	}
 
 	// Vérification d'erreur après récupération des données (ou après l'appel à GetAllArtists)
@@ -103,12 +113,8 @@ func (g *Groupie) RequestArtist(w http.ResponseWriter, r *http.Request, html str
 
 	// Récupérer la valeur de "id" du formulaire
 	id := r.FormValue("id")
-	fmt.Printf("URL Path__________________________________________________: %s\n", r.URL.Path)
 	url := r.URL.Path
 	var data interface{}
-	fmt.Println(id)
-	fmt.Println(data)
-	fmt.Println(url)
 	var err error
 
 	// Si un "id" est fourni, récupérer les informations de l'artiste correspondant
