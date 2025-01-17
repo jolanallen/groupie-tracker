@@ -19,6 +19,8 @@ func (g *Groupie) Artist(w http.ResponseWriter, r *http.Request) {
 	g.RequestArtist(w, r, g.TemplateArtist)
 }
 
+//g.FilterArtists()
+
 func (g *Groupie) RequestHome(w http.ResponseWriter, r *http.Request, html string) {
 	// Analyser les formulaires et récupérer les paramètres de la requête
 	if err := r.ParseForm(); err != nil {
@@ -27,6 +29,8 @@ func (g *Groupie) RequestHome(w http.ResponseWriter, r *http.Request, html strin
 	}
 
 	// Récupérer la valeur de "id" du formulaire
+	Name := r.FormValue("name")
+	fmt.Println(Name)
 	id := r.FormValue("id")
 	fmt.Printf("URL Path__________________________________________________: %s\n", r.URL.Path)
 	url := r.URL.Path
@@ -48,7 +52,7 @@ func (g *Groupie) RequestHome(w http.ResponseWriter, r *http.Request, html strin
 		}
 
 		// Récupérer les données de l'artiste avec l'ID converti
-		data, err = g.GetArtists(artistID)
+		data, err = g.GetArtist(artistID)
 		fmt.Println(data)
 		if err != nil {
 			// Si l'appel pour récupérer les données échoue, afficher une erreur
@@ -119,7 +123,7 @@ func (g *Groupie) RequestArtist(w http.ResponseWriter, r *http.Request, html str
 		}
 
 		// Récupérer les données de l'artiste avec l'ID converti
-		data, err = g.GetArtists(artistID)
+		data, err = g.GetArtist(artistID)
 		fmt.Println(data)
 		if err != nil {
 			// Si l'appel pour récupérer les données échoue, afficher une erreur
@@ -161,6 +165,40 @@ func (g *Groupie) RequestArtist(w http.ResponseWriter, r *http.Request, html str
 	}
 }
 
+/*
+
+
+	artists, err := g.GetArtists()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Tri des artistes par défaut par nom
+	sortedArtists := g.SortArtists(artists, SortOptions{
+		Field:     "name",
+		Direction: "asc",
+	})
+	tmpl, err := template.ParseFiles("Home.html")
+	if err != nil {
+		// Si l'erreur de parsing se produit, renvoyer l'erreur
+		http.Error(w, "Template parsing error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Affiche le template avec les artistes triés
+	err = tmpl.ExecuteTemplate(w, "Home.html", sortedArtists)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+
+
+
+
+
+*/
+
 func (g *Groupie) handleHome(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
 	if query != "" {
@@ -170,7 +208,7 @@ func (g *Groupie) handleHome(w http.ResponseWriter, r *http.Request) {
 		// Si aucune requête n'est envoyée, afficher un message
 		fmt.Fprintf(w, "No search query provided.")
 	}
-	artists, err := g.GetArtists()
+	artists, err := g.GetArtist()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

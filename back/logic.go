@@ -10,7 +10,7 @@ import (
 )
 
 // GetArtists récupère et retourne un artiste spécifique ou tous les artistes
-func (g *Groupie) GetArtists(id ...int) ([]Artists, error) {
+func (g *Groupie) GetArtist(id ...int) ([]Artists, error) {
 	// Récupère tous les artistes
 	artists, err := g.GetAllArtists()
 	if err != nil {
@@ -19,8 +19,11 @@ func (g *Groupie) GetArtists(id ...int) ([]Artists, error) {
 
 	// Si un ID est spécifié, retourne uniquement cet artiste
 	if len(id) > 0 {
+		fmt.Println(artists)
 		for _, artist := range artists {
+			fmt.Println(artist)
 			if artist.Id == id[0] {
+				fmt.Println(artist.Id)
 				return []Artists{artist}, nil
 			}
 		}
@@ -160,7 +163,7 @@ func (g *Groupie) GetRelations(id int) (*Relations, error) {
 // LoadArtistDetails charge les détails complets d'un artiste (incluant les relations)
 func (g *Groupie) LoadArtistDetails(id int) (*Artists, error) {
 	// Récupère l'artiste de base
-	artists, err := g.GetArtists(id)
+	artists, err := g.GetArtist(id)
 	if err != nil || len(artists) == 0 {
 		return nil, err
 	}
@@ -177,3 +180,8 @@ func (g *Groupie) LoadArtistDetails(id int) (*Artists, error) {
 
 	return &artist, nil
 }
+/*
+func (g *Groupie) SearchBar(name string) int {
+
+}
+*/
