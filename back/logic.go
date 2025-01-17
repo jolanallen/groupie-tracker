@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"sort"
 	"strings"
 )
@@ -27,6 +28,41 @@ func (g *Groupie) GetArtists(id ...int) ([]Artists, error) {
 	}
 
 	return artists, nil
+}
+
+func (g *Groupie) GetAllArtists() ([]Artists, error) {
+	const apiBaseURL = "http://groupietrackers.herokuapp.com/api/"
+	url := fmt.Sprintf("%sartists", apiBaseURL)
+
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("erreur lors de la récupération des artistes : %v", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("erreur avec le code de statut %d", response.StatusCode)
+	}
+
+	var artistsList []Artists
+	err = json.NewDecoder(response.Body).Decode(&artistsList)
+	if err != nil {
+		return nil, fmt.Errorf("erreur lors du décodage de la réponse : %v", err)
+	}
+
+	// Validation des données récupérées
+	for _, artist := range artistsList {
+		if artist.Id == 0 || artist.Name == "" {
+			return nil, fmt.Errorf("artiste invalide dans la réponse API : %+v", artist)
+		}
+	}
+
+	return artistsList, nil
+}
+
+func (g *Groupie) fileExists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
 }
 
 // SortArtists trie la liste des artistes selon les options spécifiées
