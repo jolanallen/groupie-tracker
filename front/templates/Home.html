@@ -11,9 +11,8 @@
         <a id="closeBtn" href="#" class="close">x</a>
         <ul>
             <h2>Menu</h2>
-          <li><a href="../templates/index.html">Home</a></li>
-          <li><a href="../templates/artists.html">Artists</a></li>
-          <li><a href="../templates/Apropos.html">About</a></li>
+          <li><a href="../templates/Home.html">Home</a></li>
+          <li><a href="../templates/Artist.html">Artists</a></li>
         </ul>
       </div>
       <a id="openBtn">
@@ -24,6 +23,18 @@
         </span>
       </a>      
 </header>
+<label for="choices">Choose an option:</label>
+    <select id="choices" name="choices">
+      <option value="svelte">name</option>
+    </select>
+<form action="/search" method="GET">
+  <label for="query">Search:</label>
+  <input type="text" id="query" name="query" placeholder="Enter your search" list="suggestions" required>
+  <datalist id="suggestions">
+      <option value="Queen">
+  </datalist>
+  <button type="submit">Search</button>
+</form>
 <section class="content">
   {{if .}} 
       {{range .}} <!-- Parcourt tous les artistes -->

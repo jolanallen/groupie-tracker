@@ -10,12 +10,11 @@ import (
 
 func (g *Groupie) Init() {
 	// Initialise les chemins des templates
-	g.TemplateHome = "front/templates/index.html"
-	g.TemplateArtist = "front/templates/artists.html"
-	g.TemplateApropos = "front/templates/Apropos.html"
+	g.TemplateHome = "front/templates/Home.html"
+	g.TemplateArtist = "front/templates/Artist.html"
 
 	// Valider les chemins des fichiers de template
-	templates := []string{g.TemplateHome, g.TemplateArtist, g.TemplateApropos}
+	templates := []string{g.TemplateHome, g.TemplateArtist}
 	for _, template := range templates {
 		if !fileExists(template) {
 			log.Printf("Template manquant : %s", template)
@@ -28,6 +27,7 @@ func fileExists(path string) bool {
 	return err == nil
 }
 
+// renvoie une liste des artiste
 func (g *Groupie) GetAllArtists() ([]Artists, error) {
 	const apiBaseURL = "http://groupietrackers.herokuapp.com/api/"
 	url := fmt.Sprintf("%sartists", apiBaseURL)

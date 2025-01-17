@@ -7,21 +7,19 @@ import (
 	"strconv"
 )
 
+// home , index.html
 func (g *Groupie) Home(w http.ResponseWriter, r *http.Request) {
 	// Fonction pour afficher les différents templates HTML (Page d'accueil)
 	g.Request(w, r, g.TemplateHome)
 }
 
+// artiste en particulier
 func (g *Groupie) Artist(w http.ResponseWriter, r *http.Request) {
 	// Fonction pour afficher le template de l'artiste spécifique
 	g.Request(w, r, g.TemplateArtist)
 }
 
-func (g *Groupie) Apropos(w http.ResponseWriter, r *http.Request) {
-	// Fonction pour afficher la page "À propos"
-	g.Request(w, r, g.TemplateApropos)
-}
-
+// la fonction qui va parser tout les fichier
 func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 	// Analyser les formulaires et récupérer les paramètres de la requête
 	if err := r.ParseForm(); err != nil {
@@ -34,6 +32,9 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 	fmt.Printf("URL Path__________________________________________________: %s\n", r.URL.Path)
 	url := r.URL.Path
 	var data interface{}
+	fmt.Println(id)
+	fmt.Println(data)
+	fmt.Println(url)
 	var err error
 
 	// Si un "id" est fourni, récupérer les informations de l'artiste correspondant
@@ -49,13 +50,14 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 
 		// Récupérer les données de l'artiste avec l'ID converti
 		data, err = g.GetArtists(artistID)
+		fmt.Println(data)
 		if err != nil {
 			// Si l'appel pour récupérer les données échoue, afficher une erreur
 			fmt.Printf("Erreur de récupération des données pour l'artiste: %v\n", err)
 			http.Error(w, "Erreur lors de la récupération des données de l'artiste", http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf("Artist data______!!!!!!!!!!!!!!!!!!!!!!____________________: %v\n", data)
+		fmt.Printf("Artist data : %v\n", data)
 	} else if url == "/" {
 		// Si aucun "id" n'est spécifié, récupérer tous les artistes
 		data, err = g.GetAllArtists()
@@ -65,7 +67,7 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 			http.Error(w, "Erreur lors de la récupération des données des artistes", http.StatusInternalServerError)
 			return
 		}
-		fmt.Printf("Artists data__________________________________________________: %+v\n", data)
+		//fmt.Printf("Artists data__________________________________________________: %+v\n", data)
 	}
 
 	// Vérification d'erreur après récupération des données (ou après l'appel à GetAllArtists)
@@ -90,7 +92,14 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 }
 
 func (g *Groupie) handleHome(w http.ResponseWriter, r *http.Request) {
-	// Récupère la liste des artistes
+	query := r.URL.Query().Get("query")
+	if query != "" {
+		// Si une requête est présente, afficher le terme recherché
+		fmt.Fprintf(w, "You searched for: %s", query)
+	} else {
+		// Si aucune requête n'est envoyée, afficher un message
+		fmt.Fprintf(w, "No search query provided.")
+	}
 	artists, err := g.GetArtists()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
