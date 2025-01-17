@@ -4,6 +4,7 @@ type Groupie struct {
 	Name           string
 	Id             int
 	Relations      string
+	apimaps        []string
 	TemplateHome   string
 	TemplateArtist string
 }
