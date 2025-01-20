@@ -1,4 +1,4 @@
-/* Général */
+/* General Styles */
 body {
   font-family: 'Arial', sans-serif;
   background-color: #121212;
@@ -7,19 +7,61 @@ body {
   padding: 0;
 }
 
-/* Formulaires */
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+/* Header Section */
+.header {
+  background-image: url(../utiles/header.png);
+  background-position: center;
+  border-radius: 5% ;
+  text-align: center;
+  background-color: #121212;
+  color: white;
   padding: 20px;
-  background-color: #1c1c1c;
-  border-radius: 10px;
-  margin: 20px;
 }
 
-form select, form input, form button {
+.header-title {
+    background-color: #6200ea9f;
+    margin-left: 38%;
+    width: 500px;
+    font-size: 4rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: rgb(255, 255, 255);
+  
+}
+
+/* Content text styles */
+.header-content {
+  background-color: #6200ea9f;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 300;
+    color: white;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
+}
+
+
+
+#icon {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+/* Search and Sort Section */
+.search-sort {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px;
+  padding: 20px;
+  background-color: #1c1c1c;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Common Styles for Form Elements */
+form select,
+form input,
+form button {
   background-color: #333;
   color: #fff;
   border: 1px solid #444;
@@ -28,13 +70,8 @@ form select, form input, form button {
   font-size: 1rem;
 }
 
-form select, form input {
-  width: 200px;
-}
-
 form button {
   background-color: #6200ea;
-  border: none;
   cursor: pointer;
 }
 
@@ -42,7 +79,28 @@ form button:hover {
   background-color: #3700b3;
 }
 
-/* Cards d'artistes */
+/* Search and Sort Specific Styles */
+.sort-select,
+.search-input {
+  width: 200px;
+}
+
+.sort-button,
+.search-button {
+  padding: 8px 15px;
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sort-button:hover,
+.search-button:hover {
+  background-color: #6200ea;
+}
+
+/* Artist Cards */
 .content {
   display: flex;
   flex-wrap: wrap;
@@ -116,16 +174,18 @@ form button:hover {
 /* Responsive Design */
 @media (max-width: 768px) {
   .content {
-      flex-direction: column;
-      align-items: center;
+    flex-direction: column;
+    align-items: center;
   }
 
   .artist-card {
-      width: 90%;
+    width: 90%;
   }
 
-  form select, form input, form button {
-      width: 100%;
-      margin: 5px 0;
+  form select,
+  form input,
+  form button {
+    width: 100%;
+    margin: 5px 0;
   }
 }

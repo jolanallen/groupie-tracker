@@ -5,55 +5,61 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../css/Home.css">
         <script src="../js/script.js" charset="utf-8"></script>
-        <title>Groupie tracker</title>
-        <link rel="shortcut icon" href="../utiles/favicon.ico" type="icon" />
+        <title>Groupie Tracker</title>
+        <link rel="shortcut icon" href="../utiles/favicon.ico" type="image/x-icon" />
+        
     </head>
-  <body>
+    <body>
+        <header>
+            <nav class="header">
+              <a id="icon" class="logo" href="/"><img id="icon" src="../utiles/logo.png" /></a>
+              <h1 class="header-title">Groupie Tracker</h1>
+              <h3 class="header-content">Bienvenue dans Groupie Tracker. Retrouvez toutes les dates et lieux des concerts de vos artistes préférés!</h3>
+            </nav>
+        </header>
 
-<form method="GET" action="/">
-  <select name="sortField">
-      <option value="name">Nom</option>
-      <option value="creation">Date de création</option>
-      <option value="members">Nombre de membres</option>
-  </select>
-  <select name="sortDir">
-      <option value="asc">Ascendant</option>
-      <option value="desc">Descendant</option>
-  </select>
-  <button type="submit">Trier</button>
-</form>
-<form action="/artists" method="GET">
-  <label for="search">Search:</label>
-  <input type="text" id="id" name="id" placeholder="Enter your search" list="suggestions" required>
-  <datalist id="suggestions">
-      {{range .}} <!-- Parcourt tous les artistes -->
-              <option value={{.Name}}>
-      {{end}}
-      
-      </datalist>
-  <button type="submit">Search</button>
-</form>
+        <section class="search-sort">
+            <form method="GET" action="/" class="sort-form">
+                <select name="sortField" class="sort-select">
+                    <option value="name">Nom</option>
+                    <option value="creation">Date de création</option>
+                    <option value="members">Nombre de membres</option>
+                </select>
+                <select name="sortDir" class="sort-select">
+                    <option value="asc">Croissant</option>
+                    <option value="desc">Décroissant</option>
+                </select>
+                <button type="submit" class="sort-button">Trier</button>
+            </form>
 
-<section class="content">
-</div>
-  {{if .}} 
-      {{range .}} <!-- Parcourt tous les artistes -->
-          <div class="artist-card">
-              <h3>{{.Name}}</h3>
-              <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
-              <form action="/artists" method="get">
-                <button name="id" id="artist-button" value="{{.Id}}">Voir Plus</button>
-              </form>
-          </div>
-      {{end}}
-  {{end}}
-</section>
+            <form action="/artists" method="GET" class="search-form">
+                <label for="search" class="search-label">Search:</label>
+                <input type="text" id="id" name="id" placeholder="Enter artist name" list="suggestions" required class="search-input">
+                <datalist id="suggestions">
+                    {{range .}} <!-- Parcourt tous les artistes -->
+                        <option value="{{.Name}}">
+                    {{end}}
+                </datalist>
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </section>
 
+        <section class="content">
+            {{if .}} 
+                {{range .}} <!-- Parcourt tous les artistes -->
+                    <div class="artist-card">
+                        <h3 class="artist-name">{{.Name}}</h3>
+                        <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
+                        <form action="/artists" method="get">
+                            <button name="id" id="artist-button" value="{{.Id}}" class="view-button">Voir Plus</button>
+                        </form>
+                    </div>
+                {{end}}
+            {{end}}
+        </section>
 
-<section class="footer">
-  <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>
-</section>
-
-  </body>
-
+        <section class="footer">
+            <p id="Copyright Groupie Tracker">&copy; <script>document.write(new Date().getUTCFullYear());</script> Groupie Tracker by Ynov Montpellier</p>
+        </section>
+    </body>
 </html>
