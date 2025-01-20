@@ -60,7 +60,7 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 			return
 		}
 
-		relations := &Relations{
+		/*relations := &Relations{
 			ID:             artistData.Id,
 			DatesLocations: artistData.DatesLocations,
 		}
@@ -68,7 +68,7 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 		if err = g.LocationApi(relations); err != nil {
 			fmt.Printf("Erreur LocationApi: %v\n", err)
 		}
-
+*/
 		data = artistData
 
 	} else if url == "/" {

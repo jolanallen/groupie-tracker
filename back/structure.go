@@ -7,6 +7,8 @@ type Groupie struct {
 	apimaps        []string
 	TemplateHome   string
 	TemplateArtist string
+	Latitude	   []string
+	Longitude	   []string
 }
 
 type Artists struct {

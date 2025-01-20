@@ -21,9 +21,9 @@
   </select>
   <button type="submit">Trier</button>
 </form>
-<form action="/artists" method="get">
+<form action="/artists" method="GET">
   <label for="search">Search:</label>
-  <input type="text" id="name" name="name" placeholder="Enter your search" list="suggestions" required>
+  <input type="text" id="id" name="id" placeholder="Enter your search" list="suggestions" required>
   <datalist id="suggestions">
       {{range .}} <!-- Parcourt tous les artistes -->
               <option value={{.Name}}>
