@@ -18,4 +18,4 @@ func (g *Groupie) Init() {
 	}
 }
 
-// renvoie une liste des artiste
+// renvoie une liste des artistes
