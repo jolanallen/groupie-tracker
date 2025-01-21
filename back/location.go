@@ -1,45 +1,64 @@
 package groupietracker
 
-/*// Structure pour la réponse JSON de Nominatim
+/*
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/url"
+)
+
+// Structure pour représenter une localisation retournée par Nominatim
 type Location struct {
 	Lat string `json:"lat"`
 	Lon string `json:"lon"`
 }
 
+// Fonction pour appeler l'API de géolocalisation et générer les URLs OpenStreetMap
 func (g *Groupie) LocationApi(relation *Relations) error {
 
+	// Vérification que la relation n'est pas nulle
 	if relation == nil {
 		return fmt.Errorf("relation cannot be nil")
 	}
 
-	var urls []string // Pour stocker toutes les URLs
+	var urls []string // Pour stocker les URLs OpenStreetMap
 
+	// Parcourir les villes des relations
 	for city := range relation.DatesLocations {
 		fmt.Printf("Ville trouvée : %s\n", city)
+
+		// Construire les paramètres de la requête
+		apiURL := "https://nominatim.openstreetmap.org/search"
+		params := url.Values{}
 		params.Add("q", city)
+		params.Add("format", "json")
 
-
+		// Effectuer la requête GET
+		resp, err := http.Get(apiURL + "?" + params.Encode())
+		if err != nil {
+			return fmt.Errorf("erreur lors de la requête vers l'API : %v", err)
+		}
+		defer resp.Body.Close()
 
 		// Décoder la réponse JSON
 		var locations []Location
 		if err := json.NewDecoder(resp.Body).Decode(&locations); err != nil {
-			fmt.Errorf("erreur lors du décodage JSON : %v", err)
+			return fmt.Errorf("erreur lors du décodage JSON : %v", err)
 		}
 
 		// Vérifier si des résultats ont été trouvés
 		if len(locations) == 0 {
-			fmt.Errorf("aucune coordonnée trouvée pour la ville : %s", city)
+			fmt.Printf("Aucune coordonnée trouvée pour la ville : %s\n", city)
+			continue
 		}
 
-		// Retourner les coordonnées
-
-		// Construire une requête vers l'API de géolocalisation
-
-		url := "https://www.openstreetmap.org/search?query=" + city + "#map=10/" + locations[0].Lat + "/" + locations[0].Lon
+		// Construire l'URL OpenStreetMap
+		url := fmt.Sprintf("https://www.openstreetmap.org/#map=10/%s/%s", locations[0].Lat, locations[0].Lon)
 		urls = append(urls, url)
 	}
 
-	// Concaténer toutes les URLs dans une seule chaîne (si nécessaire)
+	// Stocker les URLs dans le champ apimaps de Groupie
 	g.apimaps = urls
 	return nil
 }

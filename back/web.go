@@ -19,68 +19,92 @@ func (g *Groupie) Artist(w http.ResponseWriter, r *http.Request) {
 	g.Request(w, r, g.TemplateArtist)
 }
 
-// g.FilterArtists()
 func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "Error parsing form", http.StatusBadRequest)
 		return
 	}
 
-	id := r.FormValue("id")
+	name := r.FormValue("id")
+
+	var id int
+	if !g.isInt(name) {
+		id = g.GetArtistIDByName(name)
+
+	}
 	url := r.URL.Path
-	var data interface{} // Changé pour supporter à la fois un Artist et []Artists
+	var data interface{}
 	var err error
 
-	sortField := r.FormValue("sortField")
-	sortDir := r.FormValue("sortDir")
-
-	if sortField == "" {
-		sortField = "name"
-	}
-	if sortDir == "" {
-		sortDir = "asc"
+	// Extraction des options de filtre
+	creation, _ := strconv.Atoi(r.FormValue("creation"))
+	if creation == 0 {
+		creation = 1963 // Valeur par défaut
 	}
 
-	options := SortOptions{
-		Field:     sortField,
-		Direction: sortDir,
+	firstAlbum, _ := strconv.Atoi(r.FormValue("album"))
+
+	if firstAlbum == 0 {
+		firstAlbum = 1963 // Valeur par défaut
+	}
+
+	member, _ := strconv.Atoi(r.FormValue("member"))
+	if member == 0 {
+		member = 1 // Valeur par défaut
+	}
+
+	locations := r.Form["location"] // Extraction des lieux multiples
+
+	filterOptions := FilterOptions{
+		CreationDate: creation,
+		FirstAlbum:   firstAlbum,
+		MemberCount:  member,
+		Locations:    locations,
 	}
 
 	// Gestion d'un artiste spécifique
-	if id != "" {
-		artistID, err := strconv.Atoi(id)
-		if err != nil {
-			http.Error(w, "ID invalide", http.StatusBadRequest)
-			return
-		}
+	if id < 53 && id > 0 {
+		artistID := id
 
 		artistData, err := g.LoadArtistDetails(artistID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		/*
+			relations := &Relations{
+				ID:             artistData.Id,
+				DatesLocations: artistData.DatesLocations,
+			}
 
-		/*relations := &Relations{
-			ID:             artistData.Id,
-			DatesLocations: artistData.DatesLocations,
-		}
-
-		if err = g.LocationApi(relations); err != nil {
-			fmt.Printf("Erreur LocationApi: %v\n", err)
-		}
-*/
+			if err = g.LocationApi(relations); err != nil {
+				fmt.Printf("Erreur LocationApi: %v\n", err)
+			}
+		*/
 		data = artistData
-
 	} else if url == "/" {
-		// Page d'accueil - liste de tous les artistes
-		artists, err := g.GetAllArtists()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 
-		// Tri des artistes
-		data = g.SortArtists(artists, options)
+		// Si aucun filtre n'est appliqué, afficher tous les artistes
+		if creation == 1963 &&
+			firstAlbum == 1963 &&
+			member == 1 && len(locations) == 0 {
+			// Pas de filtre actif, on charge tous les artistes
+			artists, err := g.GetAllArtists()
+			if err != nil {
+				http.Error(w, "Erreur de chargement des artistes : "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+			data = artists
+		} else {
+			// Appliquer les filtres
+			searchTerm := r.FormValue("search")
+			artists, err := g.FilterArtists(filterOptions, searchTerm)
+			if err != nil {
+				http.Error(w, "Erreur de recherche : "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+			data = artists
+		}
 	}
 
 	// Vérification finale des données

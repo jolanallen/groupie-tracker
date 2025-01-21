@@ -7,8 +7,6 @@ type Groupie struct {
 	apimaps        []string
 	TemplateHome   string
 	TemplateArtist string
-	Latitude	   []string
-	Longitude	   []string
 }
 
 type Artists struct {
@@ -27,14 +25,14 @@ type Relations struct {
 	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
-type SortOptions struct {
-	// Champ sur lequel effectuer le tri (name, creation, members, etc.)
-	Field string
-
-	// Direction du tri (asc ou desc)
-	Direction string
-}
-
 type ArtistList struct {
 	Artists []Artists `json:"artists"`
+}
+
+type FilterOptions struct {
+	CreationDate int      
+	FirstAlbum   int      
+	MemberCount  int      
+	Locations    []string 
+	SearchQuery  string   
 }
