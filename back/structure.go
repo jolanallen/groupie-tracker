@@ -1,12 +1,13 @@
 package groupietracker
 
 type Groupie struct {
-	Name           string
-	Id             int
-	Relations      string
-	apimaps        []string
+	Name      string
+	Id        int
+	Relations string
+	//apimaps        []string
 	TemplateHome   string
 	TemplateArtist string
+	City           []string
 }
 
 type Artists struct {
@@ -30,9 +31,9 @@ type ArtistList struct {
 }
 
 type FilterOptions struct {
-	CreationDate int      
-	FirstAlbum   int      
-	MemberCount  int      
-	Locations    []string 
-	SearchQuery  string   
+	CreationDate int
+	FirstAlbum   int
+	MemberCount  int
+	Locations    string
+	SearchQuery  string
 }

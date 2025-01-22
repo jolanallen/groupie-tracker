@@ -37,23 +37,16 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 	var err error
 
 	// Extraction des options de filtre
-	creation, _ := strconv.Atoi(r.FormValue("creation"))
-	if creation == 0 {
-		creation = 1963 // Valeur par défaut
-	}
+	creation, _ := strconv.Atoi(r.FormValue("creationDate"))
+	firstAlbum, _ := strconv.Atoi(r.FormValue("firstAlbum"))
+	member, _ := strconv.Atoi(r.FormValue("memberCount"))
 
-	firstAlbum, _ := strconv.Atoi(r.FormValue("album"))
+	locations := r.FormValue("locations")
 
-	if firstAlbum == 0 {
-		firstAlbum = 1963 // Valeur par défaut
-	}
-
-	member, _ := strconv.Atoi(r.FormValue("member"))
-	if member == 0 {
-		member = 1 // Valeur par défaut
-	}
-
-	locations := r.Form["location"] // Extraction des lieux multiples
+	fmt.Printf(" creation: %d", creation)
+	fmt.Printf(" falbum: %d", firstAlbum)
+	fmt.Printf(" member: %d", member)
+	fmt.Printf("location %d", locations)
 
 	filterOptions := FilterOptions{
 		CreationDate: creation,
@@ -85,9 +78,7 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 	} else if url == "/" {
 
 		// Si aucun filtre n'est appliqué, afficher tous les artistes
-		if creation == 1963 &&
-			firstAlbum == 1963 &&
-			member == 1 && len(locations) == 0 {
+		if creation == 0 && firstAlbum == 0 && member == 0 && len(locations) == 0 {
 			// Pas de filtre actif, on charge tous les artistes
 			artists, err := g.GetAllArtists()
 			if err != nil {
@@ -95,10 +86,21 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 				return
 			}
 			data = artists
+
 		} else {
+
 			// Appliquer les filtres
+
 			searchTerm := r.FormValue("search")
+
+			fmt.Printf(" searchterm : %d", searchTerm)
+
 			artists, err := g.FilterArtists(filterOptions, searchTerm)
+
+			//g.SearchArtists(artists, filterOptions)
+
+			fmt.Println(" filterartistes ce que ça renvoie : ", artists)
+
 			if err != nil {
 				http.Error(w, "Erreur de recherche : "+err.Error(), http.StatusInternalServerError)
 				return
@@ -106,7 +108,11 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 			data = artists
 		}
 	}
+	fmt.Println("voici toute la data ", data)
+	var vide interface{}
+	if data == vide {
 
+	}
 	// Vérification finale des données
 	if data == nil {
 		http.Error(w, "Aucune donnée trouvée", http.StatusNotFound)

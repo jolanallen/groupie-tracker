@@ -22,17 +22,29 @@
             <h4>Filtres</h4>
 
             <!-- Filtre Date de création -->
-            <label for="creationDateRange">Date de création:</label>
-            <input type="number" id="creationDateRange" name="creationDateRange" placeholder="Ex: 2023" class="filter-input">
-
+            <label for="creationDate">Date de création:</label>
+            <input type="text" id="creationDate" name="creationDate" list="suggestionsD" placeholder="Ex: 2023" class="filter-input">
+            <datalist id="suggestionsD">
+                {{range .}} <!-- Parcourt tous les artistes -->
+                    <option value="{{.Name}}">
+                {{end}}
+            </datalist>
             <!-- Filtre Date du premier album -->
-            <label for="firstAlbumRange">Date du premier album:</label>
-            <input type="number" id="firstAlbumRange" name="firstAlbumRange" placeholder="Ex: 2001" class="filter-input">
-
+            <label for="firstAlbum">Date du premier album:</label>
+            <input type="text" id="firstAlbum" name="firstAlbum" list="suggestionsA" placeholder="Ex: 2001" class="filter-input">
+            <datalist id="suggestionsA">
+                {{range .}} <!-- Parcourt tous les artistes -->
+                    <option value="{{.Name}}">
+                {{end}}
+            </datalist>
             <!-- Filtre Nombre de membres -->
-            <label for="memberCountRange">Nombre de membres:</label>
-            <input type="number" id="memberCountRange" name="memberCountRange" placeholder="Ex: 1, 2, 3..." class="filter-input">
-
+            <label for="memberCount">Nombre de membres:</label>
+            <input type="text" id="memberCount" name="memberCount" list="suggestionsM" placeholder="Ex: 1, 2, 3..." class="filter-input">
+            <datalist id="suggestionsM">
+                {{range .}} <!-- Parcourt tous les artistes -->
+                    <option value="{{.Name}}">
+                {{end}}
+            </datalist>
             <!-- Filtre Lieux de concerts -->
             <label for="locations">Lieux de concerts:</label>
             <input type="text" id="locations" name="locations" placeholder="Paris, New York, ..." list="villes" class="filter-input">
@@ -60,6 +72,11 @@
         </form>
     </section>
 
+
+
+
+
+    
     <section class="content">
         {{if .}} 
             {{range .}} <!-- Parcourt tous les artistes -->

@@ -105,7 +105,7 @@ func (g *Groupie) GetRelations(id int) (*Relations, error) {
 	return &relations, nil
 }
 
-// SortArtists trie la liste des artistes selon les options spécifiées
+// FilterArtists trie la liste des artistes selon les options spécifiées
 func (g *Groupie) FilterArtists(filterOptions FilterOptions, searchTerm string) ([]Artists, error) {
 	// Récupérer tous les artistes depuis l'API
 	artists, err := g.GetAllArtists()
@@ -131,29 +131,29 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions, searchTerm string) 
 			}
 		}
 
-		// Filtrer par date de création
-		if artist.CreationDate < filterOptions.CreationDate || artist.CreationDate > filterOptions.CreationDate {
+		// Filtrer par date de création si spécifiée
+		if filterOptions.CreationDate != 0 && artist.CreationDate != filterOptions.CreationDate {
 			continue
 		}
 
 		// Filtrer par date du premier album
-		firstAlbumYear := 1963
-		fmt.Sscanf(artist.FirstAlbum, "%d", &firstAlbumYear)
-		if firstAlbumYear < filterOptions.FirstAlbum || firstAlbumYear > filterOptions.FirstAlbum {
+		firstAlbumYear := 0
+		fmt.Sscanf(artist.FirstAlbum, "%d", &firstAlbumYear) // Extraire l'année de `FirstAlbum`
+		if filterOptions.FirstAlbum != 0 && firstAlbumYear != filterOptions.FirstAlbum {
 			continue
 		}
 
 		// Filtrer par nombre de membres
 		memberCount := len(artist.Members)
-		if memberCount < filterOptions.MemberCount || memberCount > filterOptions.MemberCount {
+		if filterOptions.MemberCount != 0 && memberCount != filterOptions.MemberCount {
 			continue
 		}
 
 		// Filtrer par lieux de concerts
-		if len(filterOptions.Locations) > 0 {
+		if filterOptions.Locations != "" { // Vérification du champ comme une chaîne simple
 			locationMatch := false
-			for _, location := range filterOptions.Locations {
-				if _, exists := artist.DatesLocations[location]; exists {
+			for loc := range artist.DatesLocations { // loc est une clé de map représentant les lieux
+				if strings.Contains(strings.ToLower(loc), strings.ToLower(filterOptions.Locations)) {
 					locationMatch = true
 					break
 				}
@@ -167,12 +167,13 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions, searchTerm string) 
 		filteredArtists = append(filteredArtists, artist)
 	}
 
+	fmt.Println("Artistes filtrés : ", filteredArtists)
 	return filteredArtists, nil
 }
 
-// FilterArtists filtre les artistes selon différents critères
-func (g *Groupie) SearchArtists(artists []Artists, filters map[string]string) []Artists {
-	var results []Artists
+func (g *Groupie) SearchArtists(filters map[string]string) []Artists {
+	artists, _ := g.GetAllArtists()
+	var results []Artists // Correction du type de la variable
 
 	for _, artist := range artists {
 		match := true
@@ -227,7 +228,8 @@ func (g *Groupie) SearchArtists(artists []Artists, filters map[string]string) []
 				match = false
 			}
 		}
-
+		fmt.Println("oui, on a ajouté des gens : ", match)
+		// Si tous les critères sont respectés, ajouter l'artiste aux résultats
 		if match {
 			results = append(results, artist)
 		}
