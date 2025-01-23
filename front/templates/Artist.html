@@ -7,31 +7,30 @@
     <script src="../js/script.js" charset="utf-8" defer></script>
     <script src="../js/location.js" charset="utf-8" defer></script>
     <link rel="stylesheet" href="../css/artist.css">
-    <link rel="shortcut icon" href="../utiles/favicon.ico" type="icon" />
+    <link rel="shortcut icon" href="../utiles/favicon.ico" type="image/x-icon">
+    <script src="../js/script.js" defer></script>
 </head>
 <body>
-<header>
-    <li><a href="/"><h1>Acceuil</h1></a></li>
-    <header>
-      <nav class="header">
-          <h1 class="header-title">Groupie Tracker</h1>
-      </nav>
-  </header>
-</header>
+    <!-- Header Section -->
+    <header class="site-header">
+        <nav class="navbar">
+            <a href="/" class="logo">
+                <h1>Accueil</h1>
+            </a>
+            <h1 class="page-title">Groupie Tracker</h1>
+        </nav>
+    </header>
 
-<section class="content">
-    <h1>{{.Name}}</h1>
-    <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
-    <p><strong>Creation Date:</strong> {{.CreationDate}}</p>
-    
-    <section class="members">
-        <h2>Members:</h2>
-        <ul>
-            {{range .Members}}
-                <li>{{.}}</li>
-            {{end}}
-        </ul>
-    </section>
+    <!-- Main Content Section -->
+    <main class="artist-details">
+        <!-- Artist Info -->
+        <section class="artist-info">
+            <h1 class="artist-name">{{.Artists.Name}}</h1>
+            <img src="{{.Artists.Image}}" alt="Image of {{.Artists.Name}}" class="artist-image">
+            <p class="creation-date">
+                <strong>Date de Création:</strong> {{.Artists.CreationDate}}
+            </p>
+        </section>
 
     <section class="relations">
         <h2>Concert Locations & Dates:</h2>
@@ -52,17 +51,17 @@
                 {{range $dates}}
                   <li>{{.}}</li>
                 {{end}}
-              </ul>
-            </div>
-          {{end}}
-        {{else}}
-          <p>No concert locations available.</p>
-        {{end}}
-    </section>
-</section>
+            </ul>
+            {{else}}
+              <p class="no-members">Aucun membre disponible.</p>
+            {{end}}
+        </section>
 
-<section class="footer">
-    <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>
-</section>
+        </main>
+
+    <!-- Footer Section -->
+    <footer class="site-footer">
+        <p>&copy; <script>document.write(new Date().getFullYear());</script> Groupie Tracker by Ynov Montpellier</p>
+    </footer>
 </body>
 </html>

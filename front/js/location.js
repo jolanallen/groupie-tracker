@@ -53,3 +53,5 @@ async function updateMaps() {
 
 // Appeler la fonction après le chargement 
 document.addEventListener("DOMContentLoaded", updateMaps);
+
+
