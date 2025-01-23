@@ -18,39 +18,28 @@
     </header>
 
     <section class="search-sort">
+        <!-- Formulaire de filtres -->
         <form method="GET" action="/" class="filter-form">
             <h4>Filtres</h4>
 
             <!-- Filtre Date de création -->
             <label for="creationDate">Date de création:</label>
-            <input type="text" id="creationDate" name="creationDate" list="suggestionsD" placeholder="Ex: 2023" class="filter-input">
-            <datalist id="suggestionsD">
-                {{range .}} <!-- Parcourt tous les artistes -->
-                    <option value="{{.Name}}">
-                {{end}}
-            </datalist>
+            <input type="number" id="creationDate" name="creationDate" placeholder="Ex: 2023" class="filter-input">
+
             <!-- Filtre Date du premier album -->
             <label for="firstAlbum">Date du premier album:</label>
-            <input type="text" id="firstAlbum" name="firstAlbum" list="suggestionsA" placeholder="Ex: 2001" class="filter-input">
-            <datalist id="suggestionsA">
-                {{range .}} <!-- Parcourt tous les artistes -->
-                    <option value="{{.Name}}">
-                {{end}}
-            </datalist>
+            <input type="number" id="firstAlbum" name="firstAlbum" placeholder="Ex: 2001" class="filter-input">
+
             <!-- Filtre Nombre de membres -->
             <label for="memberCount">Nombre de membres:</label>
-            <input type="text" id="memberCount" name="memberCount" list="suggestionsM" placeholder="Ex: 1, 2, 3..." class="filter-input">
-            <datalist id="suggestionsM">
-                {{range .}} <!-- Parcourt tous les artistes -->
-                    <option value="{{.Name}}">
-                {{end}}
-            </datalist>
+            <input type="number" id="memberCount" name="memberCount" placeholder="Ex: 1, 2, 3..." class="filter-input">
+
             <!-- Filtre Lieux de concerts -->
             <label for="locations">Lieux de concerts:</label>
             <input type="text" id="locations" name="locations" placeholder="Paris, New York, ..." list="villes" class="filter-input">
             <datalist id="villes">
-                {{range .}} <!-- Parcourt tous les artistes -->
-                    {{range $city := .DatesLocations}} <!-- Parcourt les villes associées à un artiste -->
+                {{range .Artists}} <!-- Parcourt tous les artistes -->
+                    {{range $city, $dates := .DatesLocations}} <!-- Parcourt les villes -->
                         <option value="{{$city}}">
                     {{end}}
                 {{end}}
@@ -61,33 +50,34 @@
 
         <!-- Formulaire de recherche par nom d'artiste -->
         <form action="/artists" method="GET" class="search-form">
-            <label for="search" class="search-label">Search:</label>
-            <input type="text" id="id" name="id" placeholder="Enter artist name" list="suggestions" required class="search-input">
+            <label for="search" class="search-label">Rechercher un artiste :</label>
+            <input type="text" id="search" name="search" placeholder="Enter artist name" list="suggestions" required class="search-input">
             <datalist id="suggestions">
-                {{range .}} <!-- Parcourt tous les artistes -->
+                {{range .Artists}} <!-- Parcourt tous les artistes -->
                     <option value="{{.Name}}">
                 {{end}}
             </datalist>
-            <button type="submit" class="search-button">Search</button>
+            <button type="submit" class="search-button">Rechercher</button>
         </form>
     </section>
 
-
-
-
-
-    
     <section class="content">
-        {{if .}} 
-            {{range .}} <!-- Parcourt tous les artistes -->
-                <div class="artist-card">
-                    <h3 class="artist-name">{{.Name}}</h3>
-                    <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
-                    <form action="/artists" method="get">
-                        <button name="id" id="artist-button" value="{{.Id}}" class="view-button">Voir Plus</button>
-                    </form>
-                </div>
-            {{end}}
+        <!-- Gestion des erreurs -->
+        {{if .Message}}
+        <div class="error-message">
+            <p>{{.Message}}</p>
+        </div>
+        {{else if .Artists}}
+        <!-- Liste des artistes -->
+        {{range .Artists}}
+        <div class="artist-card">
+            <h3 class="artist-name">{{.Name}}</h3>
+            <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">
+            <form action="/artists" method="get">
+                <button name="id" id="artist-button" value="{{.Id}}" class="view-button">Voir Plus</button>
+            </form>
+        </div>
+        {{end}}
         {{end}}
     </section>
 

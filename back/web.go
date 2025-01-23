@@ -46,7 +46,7 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 	fmt.Printf(" creation: %d", creation)
 	fmt.Printf(" falbum: %d", firstAlbum)
 	fmt.Printf(" member: %d", member)
-	fmt.Printf("location %d", locations)
+	fmt.Println("location :  ", locations)
 
 	filterOptions := FilterOptions{
 		CreationDate: creation,
@@ -93,9 +93,9 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 
 			searchTerm := r.FormValue("search")
 
-			fmt.Printf(" searchterm : %d", searchTerm)
+			fmt.Printf(" searchterm : ", searchTerm)
 
-			artists, err := g.FilterArtists(filterOptions, searchTerm)
+			artists, err := g.FilterArtists(filterOptions)
 
 			//g.SearchArtists(artists, filterOptions)
 
@@ -108,26 +108,32 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 			data = artists
 		}
 	}
-	fmt.Println("voici toute la data ", data)
-	var vide interface{}
-	if data == vide {
 
-	}
-	// Vérification finale des données
+	var dat TemplateData
+
 	if data == nil {
-		http.Error(w, "Aucune donnée trouvée", http.StatusNotFound)
-		return
+		// Si aucun artiste ne correspond
+		dat = TemplateData{
+			Message: "Aucun artiste ne correspond à vos critères de recherche.",
+		}
+	} else {
+		// Si des artistes sont trouvés
+		dat = TemplateData{
+			Artists: data,
+		}
 	}
+
+	fmt.Println("voici toute la dat ", dat.Artists)
 
 	// Parsing et exécution du template
 	tmpl, err := template.ParseFiles(html)
 	if err != nil {
-		http.Error(w, "Template parsing error: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erreur de parsing du template: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if err := tmpl.Execute(w, data); err != nil {
-		fmt.Printf("Template execution error: %v\n", err)
-		http.Error(w, "Template execution error", http.StatusInternalServerError)
+	if err := tmpl.Execute(w, dat); err != nil {
+		fmt.Printf("Erreur d'exécution du template: %v\n", err)
+		http.Error(w, "Erreur d'exécution du template", http.StatusInternalServerError)
 	}
 }
