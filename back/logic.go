@@ -146,7 +146,7 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 	for _, artist := range artists {
 		// Filtre sur CreationDate
 		if filterOptions.CreationDate != 0 {
-			if artist.CreationDate < filterOptions.CreationDate {
+			if artist.CreationDate != filterOptions.CreationDate {
 				continue // Ignorer les artistes avec une date de création inférieure
 			}
 		}
@@ -158,7 +158,7 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 			if err != nil {
 				return nil, fmt.Errorf("Erreur lors de la lecture de FirstAlbum pour l'artiste %s: %v", artist.Name, err)
 			}
-			if albumYear < filterOptions.FirstAlbum {
+			if albumYear != filterOptions.FirstAlbum {
 				continue // Ignorer les artistes avec une année de premier album inférieure
 			}
 		}
