@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Groupie tracker</title>
     <script src="../js/script.js" charset="utf-8" defer></script>
+    <script src="../js/location.js" charset="utf-8" defer></script>
     <link rel="stylesheet" href="../css/artist.css">
     <link rel="shortcut icon" href="../utiles/favicon.ico" type="icon" />
 </head>
@@ -39,16 +40,13 @@
           <div style="overflow: hidden; zoom: 0.8; position: relative;">
               <!-- Utilisation correcte d'un iframe avec une URL spécifiqrrue -->
               <iframe
-                width="600"
-                height="450"
-                style="border:0; overflow-y: scroll;"
-                loading="lazy"
-                allowfullscreen
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://nominatim.openstreetmap.org/ui/search.html?q={{$location}}"
-                
-                id="map-iframe">  
-              </iframe>
+                    id="map-iframe"
+                    width="600"
+                    height="450"
+                    style="border: none;"
+                    loading="lazy"
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}">
+                </iframe>
               <h3>{{$location}}</h3>
               <ul>
                 {{range $dates}}
