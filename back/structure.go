@@ -27,10 +27,10 @@ type Relations struct {
 }
 
 type SortOptions struct {
-	// Champ sur lequel effectuer le tri (name, creation, members, etc.)
+	// Champ sur lequel effectuer le tri
 	Field string
 
-	// Direction du tri (asc ou desc)
+	// Direction du tri croissant ou décroissant
 	Direction string
 }
 
