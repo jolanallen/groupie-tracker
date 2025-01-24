@@ -1,6 +1,3 @@
-// Assurez-vous que ce script est bien lié à votre page HTML
-
-// Fonction pour récupérer les coordonnées d'une ville via l'API Nominatim
 async function getCoordinates(city) {
   try {
       const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`);
@@ -11,7 +8,6 @@ async function getCoordinates(city) {
           return null;
       }
 
-      // Récupération de la latitude et de la longitude de la première correspondance
       return {
           lat: parseFloat(data[0].lat),
           lon: parseFloat(data[0].lon),
@@ -22,7 +18,6 @@ async function getCoordinates(city) {
   }
 }
 
-// Fonction principale pour mettre à jour les iframes des cartes
 async function updateMaps() {
  
   const mapContainers = document.querySelectorAll('div[style*="position: relative;"]');
@@ -37,11 +32,10 @@ async function updateMaps() {
           continue;
       }
 
-      // Calculer la bounding box autour de la ville (ajuster pour zoomer)
-      const delta = 0.05; // Ajustez cette valeur pour modifier le niveau de zoom
+      const delta = 0.05; 
       const bbox = `${coordinates.lon - delta},${coordinates.lat - delta},${coordinates.lon + delta},${coordinates.lat + delta}`;
 
-      // Modifier dynamiquement l'iframe pour centrer sur la ville
+     
       const iframe = container.querySelector('iframe');
       if (iframe) {
           iframe.src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik`;
@@ -51,7 +45,6 @@ async function updateMaps() {
   }
 }
 
-// Appeler la fonction après le chargement 
 document.addEventListener("DOMContentLoaded", updateMaps);
 
 
