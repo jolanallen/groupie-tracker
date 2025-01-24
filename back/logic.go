@@ -153,13 +153,16 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 
 		// Filtre sur FirstAlbum
 		if filterOptions.FirstAlbum != 0 {
+			// Extraire les 4 derniers caractères de FirstAlbum
+			albumYearStr := artist.FirstAlbum[len(artist.FirstAlbum)-4:] // Prend les 4 derniers caractères
 			var albumYear int
-			_, err := fmt.Sscanf(artist.FirstAlbum, "%d", &albumYear)
+			_, err := fmt.Sscanf(albumYearStr, "%d", &albumYear)
+			fmt.Println("c'est filtre", filterOptions.FirstAlbum)
 			if err != nil {
 				return nil, fmt.Errorf("Erreur lors de la lecture de FirstAlbum pour l'artiste %s: %v", artist.Name, err)
 			}
 			if albumYear != filterOptions.FirstAlbum {
-				continue // Ignorer les artistes avec une année de premier album inférieure
+				continue // Ignorer les artistes avec une année de premier album différente
 			}
 		}
 
@@ -173,7 +176,7 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 		// Filtre sur Locations
 		if filterOptions.Locations != "" {
 			// Obtenir les villes visitées par l'artiste
-			towns := g.GetSingleTown(artist.DatesLocations)
+			towns := g.GetSingleTownFilter(artist.DatesLocations)
 
 			// Vérifier si l'artiste a visité la ville spécifiée
 			found := false
@@ -202,8 +205,8 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 	case filterOptions.FirstAlbum != 0:
 		sort.Slice(filteredArtists, func(i, j int) bool {
 			var yearI, yearJ int
-			fmt.Sscanf(filteredArtists[i].FirstAlbum, "%d", &yearI)
-			fmt.Sscanf(filteredArtists[j].FirstAlbum, "%d", &yearJ)
+			fmt.Sscanf(filteredArtists[i].FirstAlbum[len(filteredArtists[i].FirstAlbum)-4:], "%d", &yearI)
+			fmt.Sscanf(filteredArtists[j].FirstAlbum[len(filteredArtists[j].FirstAlbum)-4:], "%d", &yearJ)
 			return yearI < yearJ
 		})
 	case filterOptions.MemberCount != 0:
@@ -243,43 +246,6 @@ func (g *Groupie) GetArtistIDByName(groupName string) int {
 	return id
 }
 
-func (g *Groupie) GetSingleTown(datesLocations map[string][]string) []string {
-	var towns []string
-
-	for location := range datesLocations {
-		// Diviser la chaîne au niveau du tiret "-"
-		parts := strings.Split(location, "-")
-		for _, part := range parts {
-			// Remplacer les underscores "_" par des espaces " "
-			city := strings.ReplaceAll(part, "_", " ")
-			towns = append(towns, city)
-		}
-	}
-
-	fmt.Println("Liste des villes extraites :", towns)
-	return towns
-}
-
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-func (g *Groupie) GetCreationYears(artists []Artists) []int {
-	yearSet := make(map[int]struct{}) // Utilisation d'une map pour éliminer les doublons
-
-	// Parcourir les artistes pour collecter les années de création
-	for _, artist := range artists {
-		yearSet[artist.CreationDate] = struct{}{}
-	}
-
-	// Convertir la map en slice
-	var creationYears []int
-	for year := range yearSet {
-		creationYears = append(creationYears, year)
-	}
-
-	// Trier les années dans l'ordre croissant
-	sort.Ints(creationYears)
-
-	return creationYears
-} ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func (g *Groupie) isInt(value interface{}) bool {
 	switch value.(type) {
 	case int:
@@ -321,13 +287,37 @@ func (g *Groupie) SearchArtists(searchTerm string) []Artists {
 		if strings.Contains(strings.ToLower(artist.Name), searchTerm) ||
 			g.containsInSliceInsensitive(artist.Members, searchTerm) ||
 			g.containsInMapKeysInsensitive(artist.DatesLocations, searchTerm) ||
-			strings.Contains(strings.ToLower(g.GetLastFourCharsDatesLocations(artist.FirstAlbum)), searchTerm) ||
+			strings.Contains(strings.ToLower(g.GetLastFourChars(artist.FirstAlbum)), searchTerm) ||
 			g.creationDateMatches(artist.CreationDate, searchTerm) {
 			results = append(results, artist)
 		}
 	}
 
 	return results
+}
+
+func (g *Groupie) GetSingleTownFilter(datesLocations map[string][]string) []string {
+	var allTowns []string
+
+	// Parcourir chaque entrée de la map et obtenir les villes correspondantes
+	for location := range datesLocations {
+		towns := g.GetSingleTown(location)    // Appel à GetSingleTown pour chaque clé
+		allTowns = append(allTowns, towns...) // Ajouter les villes trouvées à la liste
+	}
+
+	// Éliminer les doublons en utilisant une map
+	uniqueTowns := make(map[string]struct{})
+	for _, town := range allTowns {
+		uniqueTowns[town] = struct{}{}
+	}
+
+	// Convertir les clés de la map uniqueTowns en une slice
+	var result []string
+	for town := range uniqueTowns {
+		result = append(result, town)
+	}
+
+	return result
 }
 
 // Fonction pour vérifier si un terme est présent dans un slice de chaînes (insensible à la casse)
@@ -340,22 +330,40 @@ func (g *Groupie) containsInSliceInsensitive(slice []string, searchTerm string) 
 	return false
 }
 
-// Fonction pour vérifier si un terme est présent dans les clés d'une map (insensible à la casse)
+// Recherche dans les clés de la map datesLocations
 func (g *Groupie) containsInMapKeysInsensitive(data map[string][]string, searchTerm string) bool {
+	// Vérifier chaque clé dans la map de manière insensible à la casse
 	for key := range data {
-		if strings.Contains(strings.ToLower(key), searchTerm) {
+		if strings.Contains(strings.ToLower(key), strings.ToLower(searchTerm)) {
 			return true
 		}
 	}
 	return false
 }
 
-// Fonction pour vérifier si une date de création correspond au searchTerm
-func (g *Groupie) creationDateMatches(creationDate int, searchTerm string) bool {
-	// Convertir la date de création en chaîne pour comparaison
-	creationDateStr := strconv.Itoa(creationDate)
-	return strings.Contains(creationDateStr, searchTerm)
+// Fonction qui retourne les villes extraites de la clé des datesLocations
+func (g *Groupie) GetSingleTown(location string) []string {
+	var towns []string
+	// Diviser la chaîne au niveau du tiret "-"
+	parts := strings.Split(location, "-")
+	for _, part := range parts {
+		// Remplacer les underscores "_" par des espaces " "
+		city := strings.ReplaceAll(part, "_", " ")
+		towns = append(towns, city)
+	}
+	return towns
 }
-func (g *Groupie) GetLastFourCharsDatesLocations(word string) string {
-	return word[4:]
+
+// Fonction qui extrait les 4 derniers caractères d'un album
+func (g *Groupie) GetLastFourChars(albumDate string) string {
+	if len(albumDate) >= 4 {
+		return albumDate[len(albumDate)-4:]
+	}
+	return ""
+}
+
+// Fonction pour vérifier la date de création (si l'année correspond)
+func (g *Groupie) creationDateMatches(creationDate int, searchTerm string) bool {
+	// Convertir la création de la date en string pour faire la comparaison
+	return strings.Contains(fmt.Sprintf("%d", creationDate), searchTerm)
 }
