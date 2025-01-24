@@ -31,36 +31,40 @@
             </p>
         </section>
 
-    <section class="relations">
-        <h2>Concert Locations & Dates:</h2>
-        {{if .DatesLocations}}
-          {{range $location, $dates := .DatesLocations}}
-          <div style="overflow: hidden; zoom: 0.8; position: relative;">
-              <!-- Utilisation correcte d'un iframe avec une URL spécifiqrrue -->
-              <iframe
-                    id="map-iframe"
+        <section class="relations">
+            <h2>Concert Locations & Dates:</h2>
+            {{if .DatesLocations}}
+              {{range $location, $dates := .DatesLocations}}
+              <div style="overflow: hidden; zoom: 0.8; position: relative;">
+                  <!-- Utilisation correcte d'un iframe avec une URL spécifique -->
+                  <iframe
                     width="600"
                     height="450"
-                    style="border: none;"
+                    style="border:0; overflow-y: scroll;"
                     loading="lazy"
-                    src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}">
-                </iframe>
-              <h3>{{$location}}</h3>
-              <ul>
-                {{range $dates}}
-                  <li>{{.}}</li>
-                {{end}}
-            </ul>
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://nominatim.openstreetmap.org/ui/search.html?q={{$location}}"
+                    
+                    id="map-iframe">  
+                  </iframe>
+                  <h3>{{$location}}</h3>
+                  <ul>
+                    {{range $dates}}
+                      <li>{{.}}</li>
+                    {{end}}
+                  </ul>
+                </div>
+              {{end}}
             {{else}}
-              <p class="no-members">Aucun membre disponible.</p>
+              <p>No concert locations available.</p>
             {{end}}
         </section>
-
-        </main>
-
-    <!-- Footer Section -->
-    <footer class="site-footer">
-        <p>&copy; <script>document.write(new Date().getFullYear());</script> Groupie Tracker by Ynov Montpellier</p>
-    </footer>
-</body>
-</html>
+    </section>
+    
+    <section class="footer">
+        <p id="Copyright Groupie tracker">&copy <script>document.write( new Date().getUTCFullYear() );</script> Groupie Tracker by Ynov Montpellier</p>
+    </section>
+    </body>
+    </html>
+    

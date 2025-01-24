@@ -21,7 +21,9 @@ func (g *Groupie) Web() {
 	// routes et fonctions associées
 	http.HandleFunc("/", g.Home)
 	http.HandleFunc("/artists", g.Artist)
-	
+	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.NotFound(w, r) // Répondre avec un 404 pour indiquer qu'il n'y a pas de favicon
+	})
 
 	//démarrage du server web
 	err := http.ListenAndServe(":3666", nil)

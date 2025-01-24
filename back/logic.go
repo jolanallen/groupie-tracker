@@ -226,77 +226,6 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 
 */
 
-func (g *Groupie) GetSingleTown(datesLocations map[string][]string) []string {
-	var towns []string
-	for town := range datesLocations {
-		towns = append(towns, g.GetCityName(town))
-	}
-	return towns
-}
-
-/*   Search Artists
-1) avons pour arguments des options de filtres
-2) filtre suivant
-3)
-4)
-5)
-6)
-7)
-8)
-9)
-
-
-*/
-
-func (g *Groupie) SearchArtists(searchTerm string) []Artists {
-	// Récupère tous les artistes
-	artists, _ := g.GetAllArtists()
-	var results []Artists
-
-	// Met le searchTerm en minuscule pour assurer l'insensibilité à la casse
-	searchTerm = strings.ToLower(searchTerm)
-
-	for _, artist := range artists {
-		// Vérifie si le searchTerm correspond à l'un des champs
-		if strings.Contains(strings.ToLower(artist.Name), searchTerm) ||
-			g.containsInSliceInsensitive(artist.Members, searchTerm) ||
-			g.containsInMapKeysInsensitive(artist.DatesLocations, searchTerm) ||
-			strings.Contains(strings.ToLower(g.GetFirstFourCharsDatesLocations(artist.FirstAlbum)), searchTerm) ||
-			g.creationDateMatches(artist.CreationDate, searchTerm) {
-			results = append(results, artist)
-		}
-	}
-
-	return results
-}
-
-// Fonction pour vérifier si un terme est présent dans un slice de chaînes (insensible à la casse)
-func (g *Groupie) containsInSliceInsensitive(slice []string, searchTerm string) bool {
-	for _, item := range slice {
-		if strings.Contains(strings.ToLower(item), searchTerm) {
-			return true
-		}
-	}
-	return false
-}
-
-// Fonction pour vérifier si un terme est présent dans les clés d'une map (insensible à la casse)
-func (g *Groupie) containsInMapKeysInsensitive(data map[string][]string, searchTerm string) bool {
-	for key := range data {
-		if strings.Contains(strings.ToLower(key), searchTerm) {
-			return true
-		}
-	}
-	return false
-}
-
-// Fonction pour vérifier si une date de création correspond au searchTerm
-func (g *Groupie) creationDateMatches(creationDate int, searchTerm string) bool {
-	// Convertir la date de création en chaîne pour comparaison
-	creationDateStr := strconv.Itoa(creationDate)
-	return strings.Contains(creationDateStr, searchTerm)
-}
-
 func (g *Groupie) GetArtistIDByName(groupName string) int {
 	// Parcourt la liste des artistes
 	artists, _ := g.GetAllArtists()
@@ -314,20 +243,21 @@ func (g *Groupie) GetArtistIDByName(groupName string) int {
 	return id
 }
 
-func (g *Groupie) GetFirstFourCharsDatesLocations(word string) string {
-	return word[:4]
-}
+func (g *Groupie) GetSingleTown(datesLocations map[string][]string) []string {
+	var towns []string
 
-func (g *Groupie) GetCityName(location string) string {
-	// Remplace les tirets par des espaces
-	location = strings.ReplaceAll(location, "-", " ")
-
-	// Sépare la chaîne pour récupérer la ville (partie avant le premier espace)
-	parts := strings.Split(location, " ")
-	if len(parts) > 0 {
-		return parts[0] // Retourne la première partie (nom de la ville)
+	for location := range datesLocations {
+		// Diviser la chaîne au niveau du tiret "-"
+		parts := strings.Split(location, "-")
+		for _, part := range parts {
+			// Remplacer les underscores "_" par des espaces " "
+			city := strings.ReplaceAll(part, "_", " ")
+			towns = append(towns, city)
+		}
 	}
-	return "" // Si aucun espace trouvé, retourne une chaîne vide
+
+	fmt.Println("Liste des villes extraites :", towns)
+	return towns
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -364,3 +294,68 @@ func (g *Groupie) fileExists(path string) bool {
 	return err == nil
 }
 
+/*   Search Artists
+1) avons pour arguments des options de filtres
+2) filtre suivant
+3)
+4)
+5)
+6)
+7)
+8)
+9)
+
+
+*/
+//(request)
+func (g *Groupie) SearchArtists(searchTerm string) []Artists {
+	// Récupère tous les artistes
+	artists, _ := g.GetAllArtists()
+	var results []Artists
+
+	// Met le searchTerm en minuscule pour assurer l'insensibilité à la casse
+	searchTerm = strings.ToLower(searchTerm)
+
+	for _, artist := range artists {
+		// Vérifie si le searchTerm correspond à l'un des champs
+		if strings.Contains(strings.ToLower(artist.Name), searchTerm) ||
+			g.containsInSliceInsensitive(artist.Members, searchTerm) ||
+			g.containsInMapKeysInsensitive(artist.DatesLocations, searchTerm) ||
+			strings.Contains(strings.ToLower(g.GetLastFourCharsDatesLocations(artist.FirstAlbum)), searchTerm) ||
+			g.creationDateMatches(artist.CreationDate, searchTerm) {
+			results = append(results, artist)
+		}
+	}
+
+	return results
+}
+
+// Fonction pour vérifier si un terme est présent dans un slice de chaînes (insensible à la casse)
+func (g *Groupie) containsInSliceInsensitive(slice []string, searchTerm string) bool {
+	for _, item := range slice {
+		if strings.Contains(strings.ToLower(item), searchTerm) {
+			return true
+		}
+	}
+	return false
+}
+
+// Fonction pour vérifier si un terme est présent dans les clés d'une map (insensible à la casse)
+func (g *Groupie) containsInMapKeysInsensitive(data map[string][]string, searchTerm string) bool {
+	for key := range data {
+		if strings.Contains(strings.ToLower(key), searchTerm) {
+			return true
+		}
+	}
+	return false
+}
+
+// Fonction pour vérifier si une date de création correspond au searchTerm
+func (g *Groupie) creationDateMatches(creationDate int, searchTerm string) bool {
+	// Convertir la date de création en chaîne pour comparaison
+	creationDateStr := strconv.Itoa(creationDate)
+	return strings.Contains(creationDateStr, searchTerm)
+}
+func (g *Groupie) GetLastFourCharsDatesLocations(word string) string {
+	return word[4:]
+}

@@ -1,7 +1,6 @@
 package groupietracker
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -25,44 +24,17 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 
 	defer log.Println("Fin Request")
 	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Error parsing form", http.StatusBadRequest)
+		http.Error(w, "Erreur lors de l'analyse du formulaire", http.StatusBadRequest)
 		return
 	}
 
-	name := r.FormValue("id")
-	fmt.Println("caca", name)
-	var id int
-	if !g.isInt(name) {
-		id = g.GetArtistIDByName(name)
-
-	}
-	url := r.URL.Path
-	var data interface{}
-	fmt.Println("popo", data)
-
-	// Extraction des options de filtre
-	creation, err := strconv.Atoi(r.FormValue("creationDate"))
-	if err != nil && r.FormValue("creationDate") != "" {
-		http.Error(w, "Invalida 'creationDate' parameter", http.StatusBadRequest)
-		return
-	}
-
-	member, err := strconv.Atoi(r.FormValue("memberCount"))
-	if err != nil && r.FormValue("memberCount") != "" {
-		http.Error(w, "Invalidb 'memberCount' parameter", http.StatusBadRequest)
-		return
-	}
-	firstAlbum, err := strconv.Atoi(r.FormValue("firstAlbum"))
-	if err != nil && r.FormValue("firstAlbum") != "" {
-		http.Error(w, "Invalidc 'firstAlbum' parameter", http.StatusBadRequest)
-		return
-	}
-
+	// Récupérer les valeurs du formulaire
+	name := r.FormValue("id")           // Pour chercher par nom ou ID
+	searchTerm := r.FormValue("search") // Terme de recherche
+	creation, _ := strconv.Atoi(r.FormValue("creationDate"))
+	member, _ := strconv.Atoi(r.FormValue("memberCount"))
+	firstAlbum, _ := strconv.Atoi(r.FormValue("firstAlbum"))
 	locations := r.FormValue("locations")
-
-	fmt.Printf(" falbum: %d", firstAlbum)
-	fmt.Printf(" member: %d", member)
-	fmt.Println("location :  ", locations)
 
 	filterOptions := FilterOptions{
 		CreationDate: creation,
@@ -71,67 +43,56 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 		Locations:    locations,
 	}
 
-	// Gestion d'un artiste spécifique
-	if id < 53 && id > 0 {
-		fmt.Println("id?")
-		artistID := id
+	var data interface{}
 
-		artistData, err := g.LoadArtistDetails(artistID)
+	// Gestion d'un artiste spécifique (par ID ou nom)
+	if name != "" {
+		var id int
+		if g.isInt(name) { // Si c'est un ID
+			id, _ = strconv.Atoi(name)
+		} else { // Si c'est un nom
+			id = g.GetArtistIDByName(name)
+		}
+
+		if id > 0 {
+			artistData, err := g.LoadArtistDetails(id)
+			if err != nil {
+				http.Error(w, "Erreur lors du chargement de l'artiste", http.StatusInternalServerError)
+				return
+			}
+			data = artistData
+		}
+	} else if searchTerm != "" { // Gestion de la recherche
+		results := g.SearchArtists(searchTerm)
+		if len(results) == 0 {
+			log.Println("Aucun artiste trouvé pour la recherche :", searchTerm)
+		}
+		data = results
+	} else if creation > 0 || member > 0 || firstAlbum > 0 || locations != "" { // Gestion des filtres
+		artists, err := g.FilterArtists(filterOptions)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Erreur lors de l'application des filtres", http.StatusInternalServerError)
 			return
 		}
-		fmt.Println("voui", artistData)
-
-		data = artistData
-		fmt.Println("nana", data)
-	} else if url == "/" {
-		fmt.Println("i2?")
-		// Si aucun filtre n'est appliqué, afficher tous les artistes
-		if creation == 0 && firstAlbum == 0 && member == 0 && len(locations) == 0 {
-			// Pas de filtre actif, on charge tous les artistes
-			artists, err := g.GetAllArtists()
-			if err != nil {
-				http.Error(w, "Erreur de chargement des artistes : "+err.Error(), http.StatusInternalServerError)
-				return
-			}
-			fmt.Println(artists)
-			data = artists
-
-		} else {
-			fmt.Println("i4?")
-			// Appliquer les filtres
-
-			searchTerm := r.FormValue("search")
-
-			fmt.Printf("searchterm : %s\n", searchTerm)
-			artists, err := g.FilterArtists(filterOptions)
-			g.SearchArtists(searchTerm)
-			//g.SearchArtists(artists, filterOptions)
-			fmt.Println("i5?")
-			fmt.Println(" filterartistes ce que ça renvoie : ", artists)
-
-			if err != nil {
-				http.Error(w, "Erreur de recherche : "+err.Error(), http.StatusInternalServerError)
-				return
-			}
-			fmt.Println("i6?")
-			data = artists
+		data = artists
+	} else { // Afficher tous les artistes si aucune recherche ni filtre
+		artists, err := g.GetAllArtists()
+		if err != nil {
+			http.Error(w, "Erreur lors du chargement des artistes", http.StatusInternalServerError)
+			return
 		}
+		data = artists
 	}
-	log.Printf("Requête reçue : %s, ID : %d", r.URL.Path, id)
-	log.Printf("Options de filtre : %+v", filterOptions)
 
-	fmt.Println("voici toute la data ", data)
+	// Parsing et rendu du template
 	tmpl, err := template.ParseFiles(html)
-	fmt.Println("voici le template ", html)
 	if err != nil {
-		http.Error(w, "Erreur de parsing du template: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Erreur de parsing du template : "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	if err := tmpl.Execute(w, data); err != nil {
-		fmt.Printf("Erreur d'exécution du template: %v\n", err)
-		http.Error(w, "Erreur d'exécution du template", http.StatusInternalServerError)
+		http.Error(w, "Erreur lors de l'exécution du template", http.StatusInternalServerError)
 	}
-	log.Printf("Method: %s, Path: %s", r.Method, r.URL.Path)
+	log.Printf("Fin de la requête : %s, données envoyées : %+v", r.URL.Path, data)
 }
