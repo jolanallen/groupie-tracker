@@ -1,0 +1,27 @@
+├── back/
+│   ├── init.go
+│   ├── logic.go
+│   ├── server.go
+│   ├── structure.go
+│   └── web.go
+├── front/
+│   ├── .vscode/
+│   │   └── settings.json
+│   ├── css/
+│   │   ├── images/
+│   │   ├── artist.css
+│   │   └── Home.css
+│   ├── js/             
+│   │   └── location.js 
+│   ├── templates/      
+│   │   ├── Artist.html 
+│   │   └── Home.html   
+│   └── utils/          
+│       ├── favicon.ico
+│       ├── header.png
+│       ├── image.png
+│       ├── logo.png
+│       └── nav.gif
+├── go.mod
+├── main.go
+└── README.md

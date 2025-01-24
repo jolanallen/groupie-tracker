@@ -6,9 +6,6 @@ type Groupie struct {
 	Relations      string
 	TemplateHome   string
 	TemplateArtist string
-	City           []string
-	SCreationYears []int
-	Messageg       string
 }
 
 type Artists struct {
@@ -20,20 +17,11 @@ type Artists struct {
 	FirstAlbum     string              `json:"firstAlbum"`
 	Relations      string              `json:"relations"`
 	DatesLocations map[string][]string `json:"datesLocations"`
-	Message        string
 }
 
 type Relations struct {
 	ID             int                 `json:"id"`
 	DatesLocations map[string][]string `json:"datesLocations"`
-}
-
-type SortOptions struct {
-	// Champ sur lequel effectuer le tri
-	Field string
-
-	// Direction du tri croissant ou décroissant
-	Direction string
 }
 
 type ArtistList struct {
@@ -48,7 +36,4 @@ type FilterOptions struct {
 	SearchQuery  string
 }
 
-type TemplateData struct {
-	Artists interface{}
-	Message string
-}
+

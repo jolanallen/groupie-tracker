@@ -364,21 +364,3 @@ func (g *Groupie) fileExists(path string) bool {
 	return err == nil
 }
 
-/*for _, artist := range artists {
-	// Vérification du terme de recherche (sur nom ou membres)
-	if searchTerm != "" {
-		termMatch := strings.Contains(strings.ToLower(artist.Name), strings.ToLower(searchTerm))
-		for _, member := range artist.Members {
-			if strings.Contains(strings.ToLower(member), strings.ToLower(searchTerm)) {
-				termMatch = true
-				break
-			}
-		}
-		if !termMatch {
-			continue
-		}
-	}
-
-	filteredArtists = append(filteredArtists, artist)
-}
-*/

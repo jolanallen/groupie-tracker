@@ -6,8 +6,7 @@
     <link rel="stylesheet" href="../css/Home.css">
     <script src="../js/script.js" charset="utf-8"></script>
     <title>Groupie Tracker</title>
-    <link rel="shortcut icon" href="../utiles/favicon.ico" type="image/x-icon" />
-</head>
+    </head>
 <body>
     <header>
         <nav class="header">
@@ -38,7 +37,7 @@
             <label for="locations">Lieux de concerts:</label>
             <input type="text" id="locations" name="locations" placeholder="Paris, New York, ..." list="villes" class="filter-input">
             <datalist id="villes">
-                {{range .Artists}} <!-- Parcourt tous les artistes -->
+                {{range .}} <!-- Parcourt tous les artistes -->
                     {{range $city, $dates := .DatesLocations}} <!-- Parcourt les villes -->
                         <option value="{{$city}}">
                     {{end}}
@@ -53,7 +52,7 @@
             <label for="search" class="search-label">Rechercher un artiste :</label>
             <input type="text" id="search" name="search" placeholder="Enter artist name" list="suggestions" required class="search-input">
             <datalist id="suggestions">
-                {{range .Artists}} <!-- Parcourt tous les artistes -->
+                {{range .}} <!-- Parcourt tous les artistes -->
                     <option value="{{.Name}}">
                 {{end}}
             </datalist>
@@ -63,13 +62,9 @@
 
     <section class="content">
         <!-- Gestion des erreurs -->
-        {{if .Message}}
-        <div class="error-message">
-            <p>{{.Message}}</p>
-        </div>
-        {{else if .Artists}}
+        {{if .}}
         <!-- Liste des artistes -->
-        {{range .Artists}}
+        {{range .}}
         <div class="artist-card">
             <h3 class="artist-name">{{.Name}}</h3>
             <img src="{{.Image}}" alt="{{.Name}} Image" class="artist-image">

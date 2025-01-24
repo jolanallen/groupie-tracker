@@ -7,7 +7,6 @@
     <script src="../js/script.js" charset="utf-8" defer></script>
     <script src="../js/location.js" charset="utf-8" defer></script>
     <link rel="stylesheet" href="../css/artist.css">
-    <link rel="shortcut icon" href="../utiles/favicon.ico" type="image/x-icon">
     <script src="../js/script.js" defer></script>
 </head>
 <body>
@@ -25,10 +24,10 @@
     <main class="artist-details">
         <!-- Artist Info -->
         <section class="artist-info">
-            <h1 class="artist-name">{{.Artists.Name}}</h1>
-            <img src="{{.Artists.Image}}" alt="Image of {{.Artists.Name}}" class="artist-image">
+            <h1 class="artist-name">{{.Name}}</h1>
+            <img src="{{.Image}}" alt="Image of {{.Name}}" class="artist-image">
             <p class="creation-date">
-                <strong>Date de Création:</strong> {{.Artists.CreationDate}}
+                <strong>Date de Création:</strong> {{.CreationDate}}
             </p>
         </section>
 
