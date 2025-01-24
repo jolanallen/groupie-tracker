@@ -4,16 +4,13 @@ async function getCoordinates(city) {
       const data = await response.json();
 
       if (data.length === 0) {
-          console.warn(`Ville non trouvée : ${city}`);
           return null;
       }
-
       return {
           lat: parseFloat(data[0].lat),
           lon: parseFloat(data[0].lon),
       };
   } catch (error) {
-      console.error(`Erreur lors de la récupération des coordonnées pour ${city}:`, error);
       return null;
   }
 }
