@@ -10,10 +10,6 @@ import (
 	"strings"
 )
 
-/*   Get ALL Artists
-1) récupére tout les artists
-2) les renvoies
-*/
 
 func (g *Groupie) GetAllArtists() ([]Artists, error) {
 	const apiBaseURL = "http://groupietrackers.herokuapp.com/api/"
@@ -35,7 +31,6 @@ func (g *Groupie) GetAllArtists() ([]Artists, error) {
 		return nil, fmt.Errorf("erreur lors du décodage de la réponse : %v", err)
 	}
 
-	// Validation des données récupérées
 	for _, artist := range artistsList {
 		if artist.Id == 0 || artist.Name == "" {
 			return nil, fmt.Errorf("artiste invalide dans la réponse API : %+v", artist)
@@ -45,27 +40,17 @@ func (g *Groupie) GetAllArtists() ([]Artists, error) {
 	return artistsList, nil
 }
 
-/*   Get Artists
-1) appel Get All Artists pour récupe tout les artists
-2) si il y a un id dans les parametre renvoie uniquement le bon artists
-
-*/
-
 // GetArtists récupère et retourne un artiste spécifique ou tous les artistes
 func (g *Groupie) GetArtist(id ...int) ([]Artists, error) {
-	// Récupère tous les artistes
+
 	artists, err := g.GetAllArtists()
 	if err != nil {
 		return nil, err
 	}
 
-	// Si un ID est spécifié, retourne uniquement cet artiste
 	if len(id) > 0 {
-		//fmt.Println(artists)
 		for _, artist := range artists {
-			//fmt.Println(artist)
 			if artist.Id == id[0] {
-				//fmt.Println(artist.Id)
 				return []Artists{artist}, nil
 			}
 		}
@@ -73,12 +58,6 @@ func (g *Groupie) GetArtist(id ...int) ([]Artists, error) {
 	}
 	return artists, nil
 }
-
-/*   Get Relations
-1) récupére les relations en fonction d'un id
-2) renvoie les relations de l'id
-
-*/
 
 // GetRelations récupère les relations (dates et lieux) pour un artiste
 func (g *Groupie) GetRelations(id int) (*Relations, error) {
@@ -102,40 +81,24 @@ func (g *Groupie) GetRelations(id int) (*Relations, error) {
 	return &relations, nil
 }
 
-/*   Load Artist Details
-1) récupére un artiste avec Get Artist
-2) récupére les relations avec Get Relations
-3) renvoie artist avec toute les info des deux API
-
-*/
 
 // LoadArtistDetails charge les détails complets d'un artiste (incluant les relations)
 func (g *Groupie) LoadArtistDetails(id int) (*Artists, error) {
-	// Récupère l'artiste de base
 	artists, err := g.GetArtist(id)
 	if err != nil || len(artists) == 0 {
 		return nil, err
 	}
 	artist := artists[0]
 
-	// Récupère les relations
 	relations, err := g.GetRelations(id)
 	if err != nil {
 		return nil, err
 	}
 
-	// Ajoute les relations à l'artiste
 	artist.DatesLocations = relations.DatesLocations
 
 	return &artist, nil
 }
-
-/*   Filter Artists
-1) avons pour arguments des options de filtres
-2) filtre suivant mes prérogative
-3) renvoie uniquement la liste des artists filtrés
-
-*/
 
 func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) {
 	artists, _ := g.GetAllArtists()
@@ -151,10 +114,8 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 			}
 		}
 
-		// Filtre sur FirstAlbum
 		if filterOptions.FirstAlbum != 0 {
-			// Extraire les 4 derniers caractères de FirstAlbum
-			albumYearStr := artist.FirstAlbum[len(artist.FirstAlbum)-4:] // Prend les 4 derniers caractères
+			albumYearStr := artist.FirstAlbum[len(artist.FirstAlbum)-4:]
 			var albumYear int
 			_, err := fmt.Sscanf(albumYearStr, "%d", &albumYear)
 			fmt.Println("c'est filtre", filterOptions.FirstAlbum)
@@ -162,23 +123,20 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 				return nil, fmt.Errorf("Erreur lors de la lecture de FirstAlbum pour l'artiste %s: %v", artist.Name, err)
 			}
 			if albumYear != filterOptions.FirstAlbum {
-				continue // Ignorer les artistes avec une année de premier album différente
+				continue
 			}
 		}
 
 		// Filtre sur MemberCount
 		if filterOptions.MemberCount > 0 {
 			if len(artist.Members) != filterOptions.MemberCount {
-				continue // Ignorer les artistes qui n'ont pas le nombre exact de membres
+				continue
 			}
 		}
 
 		// Filtre sur Locations
 		if filterOptions.Locations != "" {
-			// Obtenir les villes visitées par l'artiste
 			towns := g.GetSingleTownFilter(artist.DatesLocations)
-
-			// Vérifier si l'artiste a visité la ville spécifiée
 			found := false
 			for _, town := range towns {
 				if town == filterOptions.Locations {
@@ -188,11 +146,10 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 			}
 
 			if !found {
-				continue // Ignorer l'artiste si la ville n'est pas trouvée
+				continue
 			}
 		}
 
-		// Ajouter l'artiste filtré à la liste finale
 		filteredArtists = append(filteredArtists, artist)
 	}
 
@@ -224,21 +181,12 @@ func (g *Groupie) FilterArtists(filterOptions FilterOptions) ([]Artists, error) 
 	return filteredArtists, nil
 }
 
-/*   Get Single Town
-1) affiche sous forme de slice de string le noms des villes
-
-*/
-
 func (g *Groupie) GetArtistIDByName(groupName string) int {
-	// Parcourt la liste des artistes
 	artists, _ := g.GetAllArtists()
-
 	id, _ := strconv.Atoi(groupName)
 	if id == 0 {
 		for _, artist := range artists {
-			// Si le nom de l'artiste correspond au nom recherché
 			if artist.Name == groupName {
-				// Retourne l'ID de l'artiste trouvé
 				return artist.Id
 			}
 		}
@@ -260,22 +208,7 @@ func (g *Groupie) fileExists(path string) bool {
 	return err == nil
 }
 
-/*   Search Artists
-1) avons pour arguments des options de filtres
-2) filtre suivant
-3)
-4)
-5)
-6)
-7)
-8)
-9)
-
-
-*/
-//(request)
 func (g *Groupie) SearchArtists(searchTerm string) []Artists {
-	// Récupère tous les artistes
 	artists, _ := g.GetAllArtists()
 	var results []Artists
 
@@ -301,8 +234,8 @@ func (g *Groupie) GetSingleTownFilter(datesLocations map[string][]string) []stri
 
 	// Parcourir chaque entrée de la map et obtenir les villes correspondantes
 	for location := range datesLocations {
-		towns := g.GetSingleTown(location)    // Appel à GetSingleTown pour chaque clé
-		allTowns = append(allTowns, towns...) // Ajouter les villes trouvées à la liste
+		towns := g.GetSingleTown(location)
+		allTowns = append(allTowns, towns...) 
 	}
 
 	// Éliminer les doublons en utilisant une map

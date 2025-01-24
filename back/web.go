@@ -7,7 +7,6 @@ import (
 	"strconv"
 )
 
-// home , index.html
 func (g *Groupie) Home(w http.ResponseWriter, r *http.Request) {
 	// Fonction pour afficher les différents templates HTML (Page d'accueil)
 	g.Request(w, r, g.TemplateHome)
@@ -29,8 +28,8 @@ func (g *Groupie) Request(w http.ResponseWriter, r *http.Request, html string) {
 	}
 
 	// Récupérer les valeurs du formulaire
-	name := r.FormValue("id")           // Pour chercher par nom ou ID
-	searchTerm := r.FormValue("search") // Terme de recherche
+	name := r.FormValue("id")
+	searchTerm := r.FormValue("search") 
 	creation, _ := strconv.Atoi(r.FormValue("creationDate"))
 	member, _ := strconv.Atoi(r.FormValue("memberCount"))
 	firstAlbum, _ := strconv.Atoi(r.FormValue("firstAlbum"))
